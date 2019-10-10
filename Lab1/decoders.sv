@@ -1,12 +1,14 @@
+`timescale 1ns/10ps
+
 module decoder2to4 (enable, in, out);
 	input  logic       enable;
 	input  logic [1:0] in;
 	output logic [3:0] out;
 	
-	and out0 (out[0], enable, ~in[1], ~in[0]);
-	and out1 (out[1], enable, ~in[1],  in[0]);
-	and out2 (out[2], enable,  in[1], ~in[0]);
-	and out3 (out[3], enable,  in[1],  in[0]);
+	and #0.05 out0 (out[0], enable, ~in[1], ~in[0]);
+	and #0.05 out1 (out[1], enable, ~in[1],  in[0]);
+	and #0.05 out2 (out[2], enable,  in[1], ~in[0]);
+	and #0.05 out3 (out[3], enable,  in[1],  in[0]);
 	
 endmodule
 
@@ -15,14 +17,14 @@ module decoder3to8 (enable, in, out);
 	input  logic [2:0] in;
 	output logic [7:0] out;
 	
-	and out0 (out[0], enable, ~in[2], ~in[1], ~in[0]);
-	and out1 (out[1], enable, ~in[2], ~in[1],  in[0]);
-	and out2 (out[2], enable, ~in[2],  in[1], ~in[0]);
-	and out3 (out[3], enable, ~in[2],  in[1],  in[0]);
-	and out4 (out[4], enable,  in[2], ~in[1], ~in[0]);
-	and out5 (out[5], enable,  in[2], ~in[1],  in[0]);
-	and out6 (out[6], enable,  in[2],  in[1], ~in[0]);
-	and out7 (out[7], enable,  in[2],  in[1],  in[0]);
+	and #0.05 out0 (out[0], enable, ~in[2], ~in[1], ~in[0]);
+	and #0.05 out1 (out[1], enable, ~in[2], ~in[1],  in[0]);
+	and #0.05 out2 (out[2], enable, ~in[2],  in[1], ~in[0]);
+	and #0.05 out3 (out[3], enable, ~in[2],  in[1],  in[0]);
+	and #0.05 out4 (out[4], enable,  in[2], ~in[1], ~in[0]);
+	and #0.05 out5 (out[5], enable,  in[2], ~in[1],  in[0]);
+	and #0.05 out6 (out[6], enable,  in[2],  in[1], ~in[0]);
+	and #0.05 out7 (out[7], enable,  in[2],  in[1],  in[0]);
 	
 endmodule
 
@@ -104,12 +106,12 @@ module decoder5to32_tb ();
 	
 		enable=1'b0;
 		for (i = 0; i < 2**5; i++) begin
-			in = i; #100;
+			in = i; #10;
 		end
 		
 		enable=1'b1;
 		for (i = 0; i < 2**5; i++) begin
-			in = i; #100;
+			in = i; #10;
 		end
 		
 		$stop;

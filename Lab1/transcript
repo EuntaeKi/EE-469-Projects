@@ -1,0 +1,6 @@
+# Reading E:/IntelFPGAQuartus/modelsim_ase/tcl/vsim/pref.tcl
+# Loading project De1_SoC
+runlab.do
+# invalid command name "runlab.do"
+do runlab.do
+# Cannot open macro file: runlab.do
