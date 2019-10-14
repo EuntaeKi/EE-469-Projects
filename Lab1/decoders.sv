@@ -5,9 +5,13 @@ module decoder2to4 (enable, in, out);
 	input  logic [1:0] in;
 	output logic [3:0] out;
 	
-	and #0.05 out0 (out[0], enable, ~in[1], ~in[0]);
-	and #0.05 out1 (out[1], enable, ~in[1],  in[0]);
-	and #0.05 out2 (out[2], enable,  in[1], ~in[0]);
+	logic [1:0] nin;
+	not #0.05 not0 (nin[0], in[0]);
+	not #0.05 not1 (nin[1], in[1]);
+	
+	and #0.05 out0 (out[0], enable, nin[1], nin[0]);
+	and #0.05 out1 (out[1], enable, nin[1],  in[0]);
+	and #0.05 out2 (out[2], enable,  in[1], nin[0]);
 	and #0.05 out3 (out[3], enable,  in[1],  in[0]);
 	
 endmodule
@@ -17,13 +21,18 @@ module decoder3to8 (enable, in, out);
 	input  logic [2:0] in;
 	output logic [7:0] out;
 	
-	and #0.05 out0 (out[0], enable, ~in[2], ~in[1], ~in[0]);
-	and #0.05 out1 (out[1], enable, ~in[2], ~in[1],  in[0]);
-	and #0.05 out2 (out[2], enable, ~in[2],  in[1], ~in[0]);
-	and #0.05 out3 (out[3], enable, ~in[2],  in[1],  in[0]);
-	and #0.05 out4 (out[4], enable,  in[2], ~in[1], ~in[0]);
-	and #0.05 out5 (out[5], enable,  in[2], ~in[1],  in[0]);
-	and #0.05 out6 (out[6], enable,  in[2],  in[1], ~in[0]);
+	logic [2:0] nin;
+	not #0.05 not0 (nin[0], in[0]);
+	not #0.05 not1 (nin[1], in[1]);
+	not #0.05 not2 (nin[2], in[2]);
+	
+	and #0.05 out0 (out[0], enable, nin[2], nin[1], nin[0]);
+	and #0.05 out1 (out[1], enable, nin[2], nin[1],  in[0]);
+	and #0.05 out2 (out[2], enable, nin[2],  in[1], nin[0]);
+	and #0.05 out3 (out[3], enable, nin[2],  in[1],  in[0]);
+	and #0.05 out4 (out[4], enable,  in[2], nin[1], nin[0]);
+	and #0.05 out5 (out[5], enable,  in[2], nin[1],  in[0]);
+	and #0.05 out6 (out[6], enable,  in[2],  in[1], nin[0]);
 	and #0.05 out7 (out[7], enable,  in[2],  in[1],  in[0]);
 	
 endmodule
