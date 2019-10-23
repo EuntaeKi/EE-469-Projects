@@ -6,8 +6,10 @@ module mux2to1 (select, in, out);
 	output logic 	    out;
 	
 	logic [1:0] outputs;
+	logic nselect;
+	not #0.05 not0 (nselect, select);
 	
-	and #0.05 notSelect (outputs[0], ~select, in[0]);
+	and #0.05 notSelect (outputs[0], nselect, in[0]);
 	and #0.05 isSelect  (outputs[1],  select, in[1]);
 	or  #0.05 selectOut (out, outputs[0], outputs[1]);
 endmodule 
