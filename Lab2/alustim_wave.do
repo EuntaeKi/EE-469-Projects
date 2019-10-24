@@ -1,13 +1,13 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -noupdate /regstim/clk
-add wave -noupdate /regstim/RegWrite
-add wave -noupdate /regstim/WriteRegister
-add wave -noupdate /regstim/WriteData
-add wave -noupdate /regstim/ReadRegister1
-add wave -noupdate /regstim/ReadData1
-add wave -noupdate /regstim/ReadRegister2
-add wave -noupdate /regstim/ReadData2
+add wave -noupdate /alustim/cntrl
+add wave -noupdate -radix unsigned /alustim/A
+add wave -noupdate -radix unsigned /alustim/B
+add wave -noupdate -radix decimal /alustim/result
+add wave -noupdate /alustim/negative
+add wave -noupdate /alustim/zero
+add wave -noupdate /alustim/overflow
+add wave -noupdate /alustim/carry_out
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {0 ps} 0}
 quietly wave cursor active 1
@@ -25,4 +25,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {200000000 ps}
+WaveRestoreZoom {0 ps} {2800000000 ps}

@@ -7,11 +7,11 @@ module mux2to1 (select, in, out);
 	
 	logic [1:0] outputs;
 	logic nselect;
-	not #0.05 not0 (nselect, select);
+	not not0 (nselect, select);
 	
-	and #0.05 notSelect (outputs[0], nselect, in[0]);
-	and #0.05 isSelect  (outputs[1],  select, in[1]);
-	or  #0.05 selectOut (out, outputs[0], outputs[1]);
+	and notSelect (outputs[0], nselect, in[0]);
+	and isSelect  (outputs[1],  select, in[1]);
+	or  selectOut (out, outputs[0], outputs[1]);
 endmodule 
 
 module mux4to1 (select, in, out);
@@ -39,59 +39,6 @@ module mux8to1 (select, in, out);
 	mux2to1 mux2 (.select(select[2])  , .in(muxSel) , .out(out));
 	
 endmodule
-
-module mux16to1 (select, in, out);
-	input  logic [3:0]  select;
-	input  logic [15:0] in;
-	output logic 		  out;
-	
-	logic [1:0] muxSel;
-	
-	mux8to1 mux0 (.select(select[2:0]), .in(in[7:0]) , .out(muxSel[0]));
-	mux8to1 mux1 (.select(select[2:0]), .in(in[15:8]), .out(muxSel[1]));
-	mux2to1 mux2 (.select(select[3])  , .in(muxSel)  , .out(out));
-	
-endmodule
-
-module mux32to1 (select, in, out);
-	input  logic [4:0]  select;
-	input  logic [31:0] in;
-	output logic 		  out;
-	
-	logic [1:0] muxSel;
-	
-	mux16to1 mux0 (.select(select[3:0]), .in(in[15:0]) , .out(muxSel[0]));
-	mux16to1 mux1 (.select(select[3:0]), .in(in[31:16]), .out(muxSel[1]));
-	mux2to1 mux2  (.select(select[4])  , .in(muxSel)   , .out(out));
-	
-endmodule
-
-module mux32to1_64 (select, in, out);
-	input  logic [4:0]		  select;
-	input  logic [31:0][63:0] in;
-	output logic [63:0] 		  out;
-	
-	// In data bit matrix must be transposed into
-	// a new bus so that it can be managed
-	// by 64, 32to1 muxes.
-	logic [63:0][31:0] dataBus;
-	int i, j;
-	always_comb begin
-		for (i=0; i < 32; i++) begin
-			for (j=0; j < 64; j++) begin
-				dataBus[j][i] = in[i][j];
-			end
-		end
-	end
-	
-	genvar k;
-	generate
-		for (k=0; k < 64; k++) begin : gen_mux_64bit
-			mux32to1 muxByBit (.select(select[4:0]), .in(dataBus[k][31:0]), .out(out[k]));
-		end
-	endgenerate
-endmodule 
-
 
 /*** TEST BENCHES ***/
 module mux2to1_tb ();
@@ -142,67 +89,8 @@ module mux8to1_tb ();
 	integer i;
 	initial begin
 	
-		in=8'b10101010;
+		in=8'b00000110;
 		for (i = 0; i < 2**3; i++) begin
-			select = i; #1000;
-		end
-		$stop;
-		
-	end
-endmodule 
-
-module mux16to1_tb ();
-	logic [3:0]	select;
-	logic [15:0] in;
-	logic  		out;
-	
-	mux16to1 dut (select, in, out);
-	
-	integer i;
-	initial begin
-	
-		in=16'b1010101010101010;
-		for (i = 0; i < 2**4; i++) begin
-			select = i; #1000;
-		end
-		$stop;
-		
-	end
-endmodule 
-
-module mux32to1_tb ();
-	logic [4:0]	select;
-	logic [31:0] in;
-	logic  		out;
-	
-	mux32to1 dut (select, in, out);
-	
-	integer i;
-	initial begin
-	
-		in=32'b10101010101010101010101010101010;
-		for (i = 0; i < 2**5; i++) begin
-			select = i; #1000;
-		end
-		$stop;
-		
-	end
-endmodule 
-
-module mux32to1_64_tb ();
-	logic [4:0]			 select;
-	logic [31:0][63:0] in;
-	logic [63:0] 		 out;
-	
-	mux32to1_64 dut (select, in, out);
-	
-	integer i;
-	initial begin
-	
-		for (i = 0; i < 2**5; i++) begin
-			in[i] = i**4;
-		end
-		for (i = 0; i < 2**5; i++) begin
 			select = i; #1000;
 		end
 		$stop;
