@@ -19,6 +19,7 @@ incremental_db
 simulation
 testbench
 timing
+work
 
 # ignore Quartus II generated files
 *_generation_script*
@@ -48,4 +49,6 @@ timing
 *~
 *example*
 *sopc_*
+transcript
+*.wlf
 PLLJ_PLLSPE_INFO.txt # The generated PLL specification file
