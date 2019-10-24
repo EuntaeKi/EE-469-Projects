@@ -10,7 +10,7 @@ cModel Technology
 Z0 dD:/University of Washington/2019-20/Autumn/EE469/Labs/2019Au-EE469-Hauck/Lab2
 valu
 Z1 DXx6 sv_std 3 std 0 22 AD7iAPLo6nTIKk<N0eo=D3
-Z2 !s110 1571895363
+Z2 !s110 1571938505
 !i10b 1
 !s100 CAB2dF0zYbY[BLl3GMC]X1
 In6o;8Oij06gE>NjY5309H2
@@ -26,11 +26,11 @@ Z7 OV;L;10.5b;63
 r1
 !s85 0
 31
-!s108 1571895362.000000
-Z8 !s107 ./alu.sv|
-Z9 !s90 -reportprogress|300|./alu.sv|
+Z8 !s108 1571938505.000000
+Z9 !s107 ./alu.sv|
+Z10 !s90 -reportprogress|300|./alu.sv|
 !i113 1
-Z10 tCvgOpt 0
+Z11 tCvgOpt 0
 valu_1bit
 R1
 R2
@@ -38,22 +38,22 @@ R2
 !s100 fFmC1?JaJRR9dgC;8]C_A3
 IWNEF1NUZW:UlSV6F86VR^0
 R3
-Z11 !s105 alu_1bit_sv_unit
+Z12 !s105 alu_1bit_sv_unit
 S1
 R0
-Z12 w1571891129
-Z13 8./alu_1bit.sv
-Z14 F./alu_1bit.sv
+Z13 w1571891129
+Z14 8./alu_1bit.sv
+Z15 F./alu_1bit.sv
 L0 3
 R7
 r1
 !s85 0
 31
-Z15 !s108 1571895363.000000
+R8
 Z16 !s107 ./alu_1bit.sv|
 Z17 !s90 -reportprogress|300|./alu_1bit.sv|
 !i113 1
-R10
+R11
 valu_1bit_tb
 R1
 R2
@@ -61,22 +61,22 @@ R2
 !s100 5e:F@ca@b<YnoN`Znc5a83
 I<diodk8NhXViAzZ8>oN1X2
 R3
-R11
+R12
 S1
 R0
-R12
 R13
 R14
+R15
 L0 26
 R7
 r1
 !s85 0
 31
-R15
+R8
 R16
 R17
 !i113 1
-R10
+R11
 valu_tb
 R1
 !s110 1571894577
@@ -96,21 +96,21 @@ r1
 !s85 0
 31
 !s108 1571894577.000000
-R8
 R9
-!i113 1
 R10
+!i113 1
+R11
 valustim
 R1
 R2
 !i10b 1
-!s100 ]HQ[dUb5ZKWS3S2OF`M5S2
-I:KLGkh]kCh98]m0K?:Xn:2
+!s100 2do@[YK2g2WTZKh_hk3213
+IFbmn5a7aokSValgUI80Yh1
 R3
 !s105 alustim_sv_unit
 S1
 R0
-w1571895356
+w1571938502
 8./alustim.sv
 F./alustim.sv
 L0 20
@@ -118,11 +118,11 @@ R7
 r1
 !s85 0
 31
-R15
+R8
 !s107 ./alustim.sv|
 !s90 -reportprogress|300|./alustim.sv|
 !i113 1
-R10
+R11
 vD_FF
 R1
 Z19 !s110 1571797332
@@ -145,7 +145,7 @@ Z20 !s108 1571797332.000000
 !s107 ./dflipflop.sv|
 !s90 -reportprogress|300|./dflipflop.sv|
 !i113 1
-R10
+R11
 n@d_@f@f
 vdecoder2to4
 R1
@@ -169,7 +169,7 @@ R20
 Z25 !s107 ./decoders.sv|
 Z26 !s90 -reportprogress|300|./decoders.sv|
 !i113 1
-R10
+R11
 vdecoder2to4_tb
 R1
 R19
@@ -192,7 +192,7 @@ R20
 R25
 R26
 !i113 1
-R10
+R11
 vdecoder3to8
 R1
 R19
@@ -215,7 +215,7 @@ R20
 R25
 R26
 !i113 1
-R10
+R11
 vdecoder3to8_tb
 R1
 R19
@@ -238,7 +238,7 @@ R20
 R25
 R26
 !i113 1
-R10
+R11
 vdecoder5to32
 R1
 R19
@@ -261,7 +261,7 @@ R20
 R25
 R26
 !i113 1
-R10
+R11
 vdecoder5to32_tb
 R1
 R19
@@ -284,7 +284,7 @@ R20
 R25
 R26
 !i113 1
-R10
+R11
 vfullAdder
 R1
 R2
@@ -303,11 +303,11 @@ R7
 r1
 !s85 0
 31
-R15
+R8
 Z31 !s107 ./fullAdder.sv|
 Z32 !s90 -reportprogress|300|./fullAdder.sv|
 !i113 1
-R10
+R11
 nfull@adder
 vfullAdder_tb
 R1
@@ -327,11 +327,11 @@ R7
 r1
 !s85 0
 31
-R15
+R8
 R31
 R32
 !i113 1
-R10
+R11
 nfull@adder_tb
 vmux16to1
 R1
@@ -355,7 +355,7 @@ R20
 Z37 !s107 ./muxes.sv|
 Z38 !s90 -reportprogress|300|./muxes.sv|
 !i113 1
-R10
+R11
 vmux16to1_tb
 R1
 R19
@@ -378,7 +378,7 @@ R20
 R37
 R38
 !i113 1
-R10
+R11
 vmux2to1
 R1
 R2
@@ -397,11 +397,11 @@ R7
 r1
 !s85 0
 31
-R15
+R8
 R37
 R38
 !i113 1
-R10
+R11
 vmux2to1_tb
 R1
 R2
@@ -420,11 +420,11 @@ R7
 r1
 !s85 0
 31
-R15
+R8
 R37
 R38
 !i113 1
-R10
+R11
 vmux32to1
 R1
 R19
@@ -447,7 +447,7 @@ R20
 R37
 R38
 !i113 1
-R10
+R11
 vmux32to1_64
 R1
 R19
@@ -470,7 +470,7 @@ R20
 R37
 R38
 !i113 1
-R10
+R11
 vmux32to1_64_tb
 R1
 R19
@@ -493,7 +493,7 @@ R20
 R37
 R38
 !i113 1
-R10
+R11
 vmux32to1_tb
 R1
 R19
@@ -516,7 +516,7 @@ R20
 R37
 R38
 !i113 1
-R10
+R11
 vmux4to1
 R1
 R2
@@ -535,11 +535,11 @@ R7
 r1
 !s85 0
 31
-R15
+R8
 R37
 R38
 !i113 1
-R10
+R11
 vmux4to1_tb
 R1
 R2
@@ -558,11 +558,11 @@ R7
 r1
 !s85 0
 31
-R15
+R8
 R37
 R38
 !i113 1
-R10
+R11
 vmux8to1
 R1
 R2
@@ -581,11 +581,11 @@ R7
 r1
 !s85 0
 31
-R15
+R8
 R37
 R38
 !i113 1
-R10
+R11
 vmux8to1_tb
 R1
 R2
@@ -604,11 +604,11 @@ R7
 r1
 !s85 0
 31
-R15
+R8
 R37
 R38
 !i113 1
-R10
+R11
 vregfile
 R1
 R19
@@ -631,7 +631,7 @@ R20
 !s107 ./regfile.sv|
 !s90 -reportprogress|300|./regfile.sv|
 !i113 1
-R10
+R11
 vregister64
 R1
 R19
@@ -654,7 +654,7 @@ R20
 Z44 !s107 ./register64.sv|
 Z45 !s90 -reportprogress|300|./register64.sv|
 !i113 1
-R10
+R11
 vregister64_tb
 R1
 R19
@@ -677,7 +677,7 @@ R20
 R44
 R45
 !i113 1
-R10
+R11
 vregstim
 R1
 R19
@@ -700,4 +700,4 @@ R20
 !s107 ./regstim.sv|
 !s90 -reportprogress|300|./regstim.sv|
 !i113 1
-R10
+R11

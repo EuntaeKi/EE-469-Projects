@@ -47,20 +47,70 @@ module alustim();
 		end
 		$display("PASS_B operations complete");
 		
-		
+		/*** Addition ***/
 		$display("%t testing addition", $time);
 		cntrl = ALU_ADD;
-		A = 64'h0000000000000000; B = 64'h0000000000000000;
+		// 0 + 0
+		A = 64'd0; B = 64'd0;
 		#(delay);
-		assert(result == 64'h0000000000000000 && carry_out == 0 && overflow == 0 && negative == 0 && zero == 1);
+		assert(result == 64'd0 && carry_out == 0 && overflow == 0 && negative == 0 && zero == 1);
 		
-		A = 64'h0000000000000001; B = 64'h0000000000000001;
+		// 254 + 1
+		A = 64'd254; B = 64'd1;
 		#(delay);
-		assert(result == 64'h0000000000000002 && carry_out == 0 && overflow == 0 && negative == 0 && zero == 0);
+		assert(result == 64'd255 && carry_out == 0 && overflow == 0 && negative == 0 && zero == 0);
 		
-		A = 64'h7FFFFFFFFFFFFFFF; B = 64'h7FFFFFFFFFFFFFFF;
+		// -254 + 254
+		A = -(64'd254); B = 64'd254;
 		#(delay);
-		assert(overflow == 1);
+		assert(result == 64'd0 && carry_out == 1 && overflow == 0 && negative == 0 && zero == 1);
+		
+		// 254 + -1
+		A = 64'd254; B = -(64'd1);
+		#(delay);
+		assert(result == 64'd253 && carry_out == 1 && overflow == 0 && negative == 0 && zero == 0);
+		
+		// -254 + -254
+		A = -(64'd254); B = -(64'd254);
+		#(delay);
+		assert(result == -(64'd508) && carry_out == 1 && overflow == 0 && negative == 1 && zero == 0);
+		
+		// 9223372036854775807 + 9223372036854775807; Overflow
+		A = 64'd9223372036854775807; B = 64'd9223372036854775807;
+		#(delay);
+		assert(overflow == 1); // Since its overflow, we dont care what the other stats are
 		$display("Addition operations complete");
+		
+		
+		/*** Subtraction ***/
+		$display("%t testing subtraction", $time);
+		cntrl = ALU_SUBTRACT;
+		// 0 - 0
+		A = 64'd0; B = 64'd0;
+		#(delay);
+		assert(result == 64'd0 && carry_out == 1 && overflow == 0 && negative == 0 && zero == 1);
+		
+		// 254 - 1
+		A = 64'd254; B = 64'd1;
+		#(delay);
+		assert(result == 64'd253 && carry_out == 1 && overflow == 0 && negative == 0 && zero == 0);
+		
+		// -254 - 254
+		A = -(64'd254); B = 64'd254;
+		#(delay);
+		assert(result == -(64'd508) && carry_out == 1 && overflow == 0 && negative == 1 && zero == 0);
+		
+		// 254 - -1
+		A = 64'd254; B = -(64'd1);
+		#(delay);
+		assert(result == 64'd255 && carry_out == 0 && overflow == 0 && negative == 0 && zero == 0);
+		
+		// -254 - -254
+		A = -(64'd254); B = -(64'd254);
+		#(delay);
+		assert(result == 64'd0 && carry_out == 1 && overflow == 0 && negative == 0 && zero == 1);
+		$display("Subtraction operations complete");
+		
+		
 	end
 endmodule

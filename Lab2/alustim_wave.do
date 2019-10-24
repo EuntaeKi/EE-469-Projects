@@ -1,8 +1,8 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate /alustim/cntrl
-add wave -noupdate -radix unsigned /alustim/A
-add wave -noupdate -radix unsigned /alustim/B
+add wave -noupdate -radix decimal /alustim/A
+add wave -noupdate -radix decimal /alustim/B
 add wave -noupdate -radix decimal /alustim/result
 add wave -noupdate /alustim/negative
 add wave -noupdate /alustim/zero
