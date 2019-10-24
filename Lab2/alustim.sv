@@ -111,6 +111,28 @@ module alustim();
 		assert(result == 64'd0 && carry_out == 1 && overflow == 0 && negative == 0 && zero == 1);
 		$display("Subtraction operations complete");
 		
+		/*** AND ***/
+		$display("%t testing and", $time);
+		cntrl = ALU_AND;
+		A = 64'b0011; B = 64'b0101;
+		#(delay);
+		assert(result == 64'b0001);
+		$display("And operations complete");
 		
+		/** OR ***/
+		$display("%t testing or", $time);
+		cntrl = ALU_OR;
+		A = 64'b0011; B = 64'b0101;
+		#(delay);
+		assert(result == 64'b0111);
+		$display("or operations complete");
+		
+		/*** XOR ***/
+		$display("%t testing xor", $time);
+		cntrl = ALU_XOR;
+		A = 64'b0011; B = 64'b0101;
+		#(delay);
+		assert(result == 64'b0110);
+		$display("Xor operations complete");
 	end
 endmodule

@@ -1,8 +1,15 @@
+`timescale 1ns/10ps
+
 module fullAdder (result, A, B, cin, cout);
 	input  logic A, B, cin;
 	output logic result, cout;
+	logic xorAB, andAB, andCX;
 	
-	assign {cout, result} = A + B + cin;
+	xor #0.05 xor0 (xorAB, A, B);
+	xor #0.05 xor1 (result, xorAB, cin);
+	and #0.05 and0 (andAB, A, B);
+	and #0.05 and1 (andCX, cin, xorAB);
+	or  #0.05 or0  (cout, andAB, andCX);
 endmodule 
 
 module fullAdder_tb();
