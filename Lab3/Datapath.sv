@@ -1,16 +1,17 @@
 `timescale 1ns/10ps
-module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWrite, MemToReg, Instruction, NextPC, UpdateFlag, XferSize, Db, foverflow, fnegative, fzero, fcout);
+module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWrite, MemRead, MemToReg, Instruction, NextPC, UpdateFlag, XferSize, Db, foverflow, fnegative, fzero, fcout);
 	// Input Logic
 	input  logic        clk, reset;
-	input  logic        Reg2Loc, Reg2Write, RegWrite, MemWrite, UpdateFlag;
+	input  logic        Reg2Loc, Reg2Write, RegWrite, MemWrite, MemRead, UpdateFlag;
 	input  logic [1:0]  ALUSrc, MemToReg;
 	input  logic [2:0]  ALUOp;
 	input  logic [3:0]  XferSize;
 	input  logic [31:0] Instruction;
-	input  logic [63:0] Db, NextPC;
+	input  logic [63:0] NextPC;
 	
 	// Output Logic
 	output logic        foverflow, fnegative, fzero, fcout;
+	output logic [63:0] Db;
 	
 	// Intermediate Logic
 	logic        overflow, negative, zero, cout;
@@ -53,7 +54,7 @@ module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWri
 	assign fzero = zero;
 	
 	// Data Memory
-	datamem DataMemory (.address(ALUOut), .write_enable(MemWrite), .read_enable(MemToReg), .write_data(Db), .clk(clk), .xfer_size(XferSize), .read_data(MemOut));
+	datamem DataMemory (.address(ALUOut), .write_enable(MemWrite), .read_enable(MemRead), .write_data(Db), .clk(clk), .xfer_size(XferSize), .read_data(MemOut));
 	
 	// MemToReg Mux
 	mux4to1_64bit MuxMemToReg (.select(MemToReg[1:0]), .in({64'bx, NextPC, MemOut, ALUOut}), .out(Dw));
