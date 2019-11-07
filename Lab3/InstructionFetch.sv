@@ -1,9 +1,10 @@
-module InstructionFetch (clk, reset, UncondBr, BrTaken, Instruction);
+module InstructionFetch (clk, reset, UncondBr, BrTaken, Instruction, NextPC);
 	// Input Logic
 	input logic clk, reset, UncondBr, BrTaken;
 	
 	// Output Logic
 	output logic [31:0] Instruction;
+	output logic [63:0] NextPC;
 	
 	// Intermediate Logic
 	logic [63:0] condAddr, brAdder, muxedAddr, shiftedAddr, branchedAddr, currentPC, updatedPC;
@@ -32,5 +33,7 @@ module InstructionFetch (clk, reset, UncondBr, BrTaken, Instruction);
 	ProgramCounter pc (.clk, .reset, .in(updatedPC), .out(currentPC));
 
 	// Feed the address and will Fetches the Instruction into the top-level module
-	instructmem instmem (.address(currentPC), .instruction(Instruction), .clk);	
+	instructmem instmem (.address(currentPC), .instruction(Instruction), .clk);
+
+	assign NextPC = updatedPc;
 endmodule 
