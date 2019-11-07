@@ -1,4 +1,4 @@
-module programCounter (clk, reset, in, out);
+module ProgramCounter (clk, reset, in, out);
 	
 	// Input Logic
 	input  logic        clk, reset;
