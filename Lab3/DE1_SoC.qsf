@@ -678,6 +678,7 @@ set_global_assignment -name SYSTEMVERILOG_FILE regfile.sv
 set_global_assignment -name SYSTEMVERILOG_FILE register64.sv
 set_global_assignment -name SYSTEMVERILOG_FILE alu.sv
 set_global_assignment -name SYSTEMVERILOG_FILE alu_1bit.sv
+set_global_assignment -name SYSTEMVERILOG_FILE FlagReg.sv
 set_global_assignment -name SYSTEMVERILOG_FILE muxes.sv
 set_global_assignment -name SYSTEMVERILOG_FILE fullAdder.sv
 set_global_assignment -name SYSTEMVERILOG_FILE fullAdder_64.sv
@@ -685,7 +686,6 @@ set_global_assignment -name SYSTEMVERILOG_FILE decoder3_8.sv
 set_global_assignment -name SYSTEMVERILOG_FILE decoder2_4.sv
 set_global_assignment -name SYSTEMVERILOG_FILE decoder5_32.sv
 set_global_assignment -name SYSTEMVERILOG_FILE SignExtend.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ZeroExtend.sv
 set_global_assignment -name SYSTEMVERILOG_FILE D_FF.sv
 set_global_assignment -name SYSTEMVERILOG_FILE math.sv
 set_global_assignment -name SYSTEMVERILOG_FILE datamem.sv
