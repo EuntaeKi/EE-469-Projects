@@ -13,9 +13,9 @@ module InstructionFetch (clk, reset, UncondBr, BrTaken, Instruction);
 	// Instruction[25:0] is BrAddr26
 	signExtend signExtendCondAddr (.in(Instruction[23:5]), .out(condAddr));
 	signExtend signExtendBrAddr (.in(Instruction[25:0]), .out(brAddr));
-
+	
 	// MUX whether or not it's an unconditional branch
-	MUX64_2_1 condMUX (.a(condAddr), .b(brAddr), .en(UncondBr), .out(muxedAddr));
+	mux2to1_Nbit #(.N(64)) condMUX (.en(UncondBr), .a(condAddr), .b(brAddr), .out(muxedAddr));
 	
 	// Shift the muxedAddr by 2 bits to multiply it by 4
 	shifter shift (.value(condAddr), .direction(1'b0), .distance(5'b00010), .result(shiftedAddr));
@@ -25,7 +25,7 @@ module InstructionFetch (clk, reset, UncondBr, BrTaken, Instruction);
 
 	// Determine if branch instruction was given or not
 	// The result goes into PC regardless to update the PC
-	MUX2_1 brMUX (.a(currentPC + 3'b100), .b(branchedAddr), .en(BrTaken), .out(updatedPC));
+	mux2to1_Nbit #(.N(64)) brMUX (.en(BrTaken), .a(currentPC + 3'b100), .b(branchedAddr), .out(updatedPC));
 
 	// Register that hold the ProgramCounter
 	// Current PC gets fed into IM (Instruction Memory)

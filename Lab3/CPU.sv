@@ -13,6 +13,6 @@ module CPU (CLOCK_50, reset);
 	clockDivider clock (.clk(CLOCK_50), .divided_clocks);
 	ControlSignal signal (.*);
 	InstructionFetch instFetch (.*, .clk(divided_clocks[5]));
-	DataPath data (.*, .clk(CLOCK_50), XferSize(4'b1000));
+	DataPath data (.*, .clk(CLOCK_50), .XferSize(4'b1000));
 
 endmodule 

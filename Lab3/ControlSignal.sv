@@ -1,7 +1,8 @@
-module ControlSignal (fzero, Instruction, Reg2Loc, ALUSrc, MemToReg, RegWrite, MemWrite, BrTaken, UncondBr);
+module ControlSignal (fzero, Instruction, Reg2Loc, ALUSrc, MemToReg, RegWrite, MemWrite, BrTaken, UncondBr, ALUOp);
     
     // Input Logic
     input logic fzero;
+    input logic [2:0] ALUOp;
     input logic [31:0] Instruction;
 
     // Output Logic
@@ -29,5 +30,5 @@ module ControlSignal (fzero, Instruction, Reg2Loc, ALUSrc, MemToReg, RegWrite, M
 	assign RegToMem = Instruction[22];
 	assign ALUSrc = Instruction[30] & Instruction[29];
 	assign Reg2Loc = Instruction[25] & Instruction[24];
-    
+
 endmodule

@@ -1,6 +1,6 @@
 `timescale 1ns/10ps
 
-module mux2to1_Nbit #(parameter N = 1) (select, a, b, out);
+module mux2to1_Nbit #(parameter N = 1) (en, a, b, out);
 	input logic [N-1:0] a, b;
 	input logic en;
 	output logic [N-1:0] out;
