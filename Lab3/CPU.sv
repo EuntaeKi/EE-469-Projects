@@ -1,17 +1,12 @@
 module CPUtop (CLOCK_50, reset);
 	input logic CLOCK_50, reset;
-	logic [11:0] AddI12;
-	logic [18:0] CondAddr19;
-	logic [25:0] BrAddr26;
-	logic [4:0] Rd, Rm, Rn;
 	logic [31:0] divided_clocks;
-	logic [31:0] opCode;
+	logic [31:0] Instruction;
 	logic [2:0] ALUOp;
 	logic Reg2Loc, ALUSrc, MemToReg, RegWrite, MemWrite, BrTaken, UncondBr, Zero;
 	
 	clockDivider clock (.clk(CLOCK_50), .divided_clocks);
-	CPUcontrol control (.*, .clk(divided_clocks[10]));
-	CPUdatapath data (.*);
+
 	
 	always_comb begin
 		if (opCode[31] & opCode[30] & opCode[25] & opCode[24])
