@@ -11,8 +11,8 @@ module ControlSignal (Instruction, Reg2Loc, Reg2Write, ALUSrc, MemToReg, RegWrit
     
 	 // Control logic
     always_comb begin
-		case (Instruction[31:21])
-			11'b000101XXXXX: begin // B
+		casex (Instruction[31:21])
+			11'b000101xxxxx: begin // B
 				ALUOp 	  = 3'bX;
 				UpdateFlag = 1'b0;
 				UncondBr   = 1'b1;
@@ -54,7 +54,7 @@ module ControlSignal (Instruction, Reg2Loc, Reg2Write, ALUSrc, MemToReg, RegWrit
 				Reg2Write  = 1'b1;
 			end
 
-			11'b100101XXXXX: begin // BR
+			11'b11010110000: begin // BR
 				ALUOp 	  = 3'bX;
 				UpdateFlag = 1'b0;
 				UncondBr   = 1'bX;
@@ -82,7 +82,7 @@ module ControlSignal (Instruction, Reg2Loc, Reg2Write, ALUSrc, MemToReg, RegWrit
 				Reg2Write  = 1'bX;
 			end
 			
-			11'b10010000100: begin // ADDI
+			11'b10010001000: begin // ADDI
 				ALUOp 	  = 3'b010;
 				UpdateFlag = 1'b0;
 				UncondBr   = 1'bX;
@@ -138,7 +138,7 @@ module ControlSignal (Instruction, Reg2Loc, Reg2Write, ALUSrc, MemToReg, RegWrit
 				Reg2Write  = 1'b0;
 			end
 			
-			11'b11111000010: begin // STUR
+			11'b11111000000: begin // STUR
 				ALUOp 	  = 3'b010;
 				UpdateFlag = 1'b0;
 				UncondBr   = 1'bX;
@@ -152,6 +152,7 @@ module ControlSignal (Instruction, Reg2Loc, Reg2Write, ALUSrc, MemToReg, RegWrit
 				Reg2Write  = 1'b0;
 			end
 			
+			/*
 			default: begin
 				ALUOp 	  = 3'bX;
 				UpdateFlag = 1'b0;
@@ -165,6 +166,7 @@ module ControlSignal (Instruction, Reg2Loc, Reg2Write, ALUSrc, MemToReg, RegWrit
 				Reg2Loc    = 1'bX;
 				Reg2Write  = 1'bX;
 			end
+			*/
 		endcase
 	end
 endmodule
