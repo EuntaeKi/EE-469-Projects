@@ -39,4 +39,4 @@ module CPUtop (CLOCK_50, reset);
 	assign RegToMem = opCode[22];
 	assign ALUSrc = opCode[30] & opCode[29];
 	assign Reg2Loc = opCode[25] & opCode[24];
-endmodule
+endmodule 

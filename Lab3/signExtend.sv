@@ -1,26 +1,20 @@
-module signExtend #(parameter N = 5) (input logic [N-1:0] in, output logic [63:0] out);
+module signExtend #(parameter N = 5) (in, out);
+	input  logic [N-1:0] in;
+	output logic [63:0]  out;
 
-	always_comb begin
-		integer i;
-		for (i=0; i < N-1; i++)
-			out[i] = in[i];
-		for (i=N-1; i < 64; i++)
-			out[i] = in[N-1];
-	end
+	assign out[63:N] = {(64-N){in[N-1]}};	
+	assign out[N-1:0] = in[N-1:0];
 endmodule
 
 module signExtend_testbench ();
-	parameter N = 5;
-	logic [N-1:0] in;
+	logic [4:0] in;
 	logic [63:0] out;
 	
-	signExtend dut (.*);
+	signExtend dut (.in, .out);
 	
 	initial begin
-		in = 5'd16; #10;
-		#10;
-		in = 5'd23;	#10;
-		#10;
+		in = 5'd00110; #10;
+		in = 5'd10111;	#10;
 	end
 endmodule
 	

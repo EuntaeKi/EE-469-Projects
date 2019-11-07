@@ -13,4 +13,4 @@ module CPUcontrol (CondAddr19, BrAddr26, UncondBr, BrTaken, clk, reset, opCode);
 	fullAdder_64 add (.a(PC), .b(shiftedCond), .out(BrAddr));
 	programCounter pc (.in(updatedPC), .clk, .reset, .out(PC));
 	instructmem instmem (.address(PC), .instruction(opCode), .clk);	
-endmodule
+endmodule 
