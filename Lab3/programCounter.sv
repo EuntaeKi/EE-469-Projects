@@ -13,4 +13,4 @@ module ProgramCounter (clk, reset, in, out);
 			D_FF dff1 (.q(out[i]), .d(in[i]), .reset, .clk);
 		end
 	endgenerate
-endmodule
+endmodule 

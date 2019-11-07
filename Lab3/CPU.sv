@@ -18,3 +18,4 @@ module CPU (CLOCK_50, reset);
 	Datapath data (.clk(divided_clocks[5]), .reset, .Reg2Loc, .Reg2Write, .RegWrite, .ALUSrc, .ALUOp, .MemWrite, .MemRead, .MemToReg, .Instruction, .NextPC, .UpdateFlag, .XferSize(4'b1000), .Db, .foverflow, .fnegative, .fzero, .fcout);
 
 endmodule 
+

@@ -167,18 +167,4 @@ module ControlSignal (Instruction, Reg2Loc, Reg2Write, ALUSrc, MemToReg, RegWrit
 			end
 		endcase
 	end
-
-	/*
-	always_comb begin
-		UpdateFlag = ~Instruction[28];
-		UncondBr   = ~Instruction[29];
-		BrTaken    = (Instruction[26] & (Instruction[31:28] != 4'b1011)) | (fzero & (Instruction[31:28] == 4'b1011));
-		MemWrite   = Instruction[30] & Instruction[29] & ~Instruction[22];
-		RegWrite   = 1'b0;
-		MemToReg   = 2'b0;
-		ALUSrc     = 2'b0;
-		Reg2Loc    = Instruction[25] & Instruction[24];
-		Reg2Write  = (Instruction[31] & ~Instruction[29] & Instruction[26]);
-	end
-	*/
 endmodule
