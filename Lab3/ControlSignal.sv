@@ -1,4 +1,4 @@
-module ControlSignal (fzero, Instruction, Reg2Loc, ALUSrc, MemToReg, RegWrite, MemWrite, BrTaken, UncondBr, ALUOp);
+module ControlSignal (fzero, Instruction, Reg2Loc, ALUSrc, MemToReg, RegWrite, MemWrite, BrTaken, UncondBr, ALUOp, updateFlag);
     
     // Input Logic
     input logic fzero;
@@ -6,7 +6,7 @@ module ControlSignal (fzero, Instruction, Reg2Loc, ALUSrc, MemToReg, RegWrite, M
     input logic [31:0] Instruction;
 
     // Output Logic
-    output logic Reg2Loc, ALUSrc, MemToReg, RegWrite, MemWrite, BrTaken, UncondBr;
+    output logic Reg2Loc, ALUSrc, MemToReg, RegWrite, MemWrite, BrTaken, UncondBr, updateFlag;
 	
     // ALUOp logic
     always_comb begin
@@ -23,6 +23,7 @@ module ControlSignal (fzero, Instruction, Reg2Loc, ALUSrc, MemToReg, RegWrite, M
 	end
 
     // Control Signal Logic
+    assign updateFlag = ~Instruction[28];
 	assign UncondBr = ~Instruction[31];
 	assign BrTaken = (fzero & (Instruction[31:28] == 4'b1011)) | ~Instruction[31];
 	assign MemWrite = Instruction[30] & Instruction[29] & ~Instruction[22];

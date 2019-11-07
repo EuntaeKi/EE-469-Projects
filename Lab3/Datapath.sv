@@ -1,8 +1,8 @@
 `timescale 1ns/10ps
-module Datapath (clk, reset, Reg2Loc, RegWrite, ALUSrc, ALUOp, MemWrite, MemToReg, Instruction, XferSize, foverflow, fnegative, fzero, fcout);
+module Datapath (clk, reset, Reg2Loc, RegWrite, ALUSrc, ALUOp, MemWrite, MemToReg, Instruction, updateFlag, XferSize, foverflow, fnegative, fzero, fcout);
 	// Input Logic
 	input  logic        clk, reset;
-	input  logic        Reg2Loc, RegWrite, MemWrite, MemToReg;
+	input  logic        Reg2Loc, RegWrite, MemWrite, MemToReg, updateFlag;
 	input  logic [1:0]  ALUSrc;
 	input  logic [2:0]  ALUOp;
 	input  logic [3:0]  XferSize;

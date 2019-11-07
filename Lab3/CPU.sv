@@ -8,7 +8,7 @@ module CPU (CLOCK_50, reset);
 	// Control Signal logics
 	logic [31:0] Instruction;
 	logic [2:0] ALUOp;
-	logic Reg2Loc, ALUSrc, MemToReg, RegWrite, MemWrite, BrTaken, UncondBr, fzero, foverflow, fnegative, fcout;
+	logic Reg2Loc, ALUSrc, MemToReg, RegWrite, MemWrite, BrTaken, UncondBr, updateFlag, fzero, foverflow, fnegative, fcout;
 	
 	clockDivider clock (.clk(CLOCK_50), .divided_clocks);
 	ControlSignal signal (.*);
