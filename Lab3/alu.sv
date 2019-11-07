@@ -1,3 +1,5 @@
+`timescale 1ns/10ps
+
 module alu (A, B, cntrl, result, negative, zero, overflow, carry_out);
 
 	input  logic [2:0]  cntrl;

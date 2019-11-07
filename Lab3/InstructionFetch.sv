@@ -9,26 +9,26 @@ module InstructionFetch (clk, reset, Db, UncondBr, BrTaken, Instruction, NextPC)
 	output logic [63:0] NextPC;
 	
 	// Intermediate Logic
-	logic [63:0] condAddr, brAdder, muxedAddr, shiftedAddr, branchedAddr, currentPC, updatedPC;
+	logic [63:0] condAddr, brAddr, muxedAddr, shiftedAddr, branchedAddr, currentPC, updatedPC;
 	
 	// Sign Extend the address inputs
 	// Instruction[23:5] is CondAddr19
 	// Instruction[25:0] is BrAddr26
-	signExtend signExtendCondAddr (.in(Instruction[23:5]), .out(condAddr));
-	signExtend signExtendBrAddr (.in(Instruction[25:0]), .out(brAddr));
+	SignExtend #(.N(19)) signExtendCondAddr (.in(Instruction[23:5]), .out(condAddr));
+	SignExtend #(.N(26)) signExtendBrAddr (.in(Instruction[25:0]), .out(brAddr));
 	
 	// MUX whether or not it's an unconditional branch
 	mux2to1_Nbit #(.N(64)) condMUX (.en(UncondBr), .a(condAddr), .b(brAddr), .out(muxedAddr));
 	
 	// Shift the muxedAddr by 2 bits to multiply it by 4
-	shifter shift (.value(condAddr), .direction(1'b0), .distance(5'b00010), .result(shiftedAddr));
+	shifter shift (.value(condAddr), .direction(1'b0), .distance(6'b000010), .result(shiftedAddr));
 
 	// Add the shiftedAddr with currentPC
-	fullAdder_64 add (.a(currentPC), .b(shiftedCond), .out(branchedAddr));
+	fullAdder_64 add (.result(branchedAddr), .A(currentPC), .B(shiftedAddr), .cin(1'b0), .cout());
 
 	// Determine if branch instruction was given or not
 	// The result goes into PC regardless to update the PC
-	mux4to1_64bit brMUX (.select(BrTaken), .in({Db, branchedAddr, currentPC + 64'd4}), .out(updatedPC));
+	mux4to1_64bit brMUX (.select(BrTaken), .in({64'b0, Db, branchedAddr, currentPC + 64'd4}), .out(updatedPC));
 
 	// Register that hold the ProgramCounter
 	// Current PC gets fed into IM (Instruction Memory)

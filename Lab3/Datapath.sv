@@ -20,18 +20,18 @@ module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWri
 	
 	// Reg2Write Mux
 	// Rm = Instruction[4:0] when used
-	mux2to1_Nbit #(.N(5)) MuxReg2Write (.A(Instruction[4:0]), .B(5'd30), .en(Reg2Write), .out(Aw[4:0]));
+	mux2to1_Nbit #(.N(5)) MuxReg2Write (.en(Reg2Write), .a(Instruction[4:0]), .b(5'd30), .out(Aw[4:0]));
 	
 	// Reg2Loc Mux
 	// Rd = Instruction[4:0] when used
 	// Rm = Instruction[20:16] when used
 	// Otherwise value is not used
-	mux2to1_Nbit #(.N(5)) MuxReg2Loc (.A(Instruction[4:0]), .B(Instruction[20:16]), .en(Reg2Loc), .out(Ab[4:0]));
+	mux2to1_Nbit #(.N(5)) MuxReg2Loc (.en(Reg2Loc), .a(Instruction[4:0]), .b(Instruction[20:16]), .out(Ab[4:0]));
 	
 	// Imm12
 	// Zero Extended Instruction[21:10] when used
 	// Otherwise value is not used
-	SignExtend #(.N(13)) ExtendImm12 (.in({0, Instruction[21:10]}), .out(Imm12_Ext));
+	SignExtend #(.N(13)) ExtendImm12 (.in({1'b0, Instruction[21:10]}), .out(Imm12_Ext));
 	
 	// Imm9
 	// Sign Extended Instruction[20:12] when used
@@ -41,7 +41,7 @@ module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWri
 	// RegFile
 	// Rn = Instruction[9:5] when used
 	// Otherwise value is not used
-	regfile Register (.ReadData1(Da), .ReadData2(Db), .WriteData(Dw), .ReadRegister1(Instruction[9:5]), .ReadRegister2(Ab));
+	regfile Register (.ReadData1(Da), .ReadData2(Db), .WriteData(Dw), .ReadRegister1(Instruction[9:5]), .ReadRegister2(Ab), .WriteRegister(Aw), .RegWrite(RegWrite), .clk(clk));
 	
 	// ALUSrc Mux
 	mux4to1_64bit MuxALUSrc(.select(ALUSrc), .in({64'bx, Imm9_Ext, Imm12_Ext, Db}), .out(ALUB));
