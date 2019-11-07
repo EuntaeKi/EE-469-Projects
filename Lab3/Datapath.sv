@@ -1,9 +1,9 @@
 `timescale 1ns/10ps
-module Datapath (clk, reset, Reg2Loc, RegWrite, ALUSrc, ALUOp, MemWrite, MemToReg, Instruction, updateFlag, XferSize, foverflow, fnegative, fzero, fcout);
+module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWrite, MemToReg, Instruction, UpdateFlag, XferSize, foverflow, fnegative, fzero, fcout);
 	// Input Logic
 	input  logic        clk, reset;
-	input  logic        Reg2Loc, RegWrite, MemWrite, MemToReg, updateFlag;
-	input  logic [1:0]  ALUSrc;
+	input  logic        Reg2Loc, Reg2Write, RegWrite, MemWrite, UpdateFlag;
+	input  logic [1:0]  ALUSrc, MemToReg;
 	input  logic [2:0]  ALUOp;
 	input  logic [3:0]  XferSize;
 	input  logic [31:0] Instruction;
@@ -13,8 +13,12 @@ module Datapath (clk, reset, Reg2Loc, RegWrite, ALUSrc, ALUOp, MemWrite, MemToRe
 	
 	// Intermediate Logic
 	logic        overflow, negative, zero, cout;
-	logic [4:0]  Ab;
+	logic [4:0]  Aw, Ab;
 	logic [63:0] Da, Db, Dw, Imm12_Ext, Imm9_Ext, ALUB, ALUOut, MemOut;
+	
+	// Reg2Write Mux
+	// Rm = Instruction[4:0] when used
+	mux2to1_Nbit #(.N(5)) MuxReg2Write (.A(Instruction[4:0]), .B(5'd30), .en(Reg2Write), .out(Aw[4:0]));
 	
 	// Reg2Loc Mux
 	// Rd = Instruction[4:0] when used
@@ -50,7 +54,7 @@ module Datapath (clk, reset, Reg2Loc, RegWrite, ALUSrc, ALUOp, MemWrite, MemToRe
 	datamem DataMemory (.address(ALUOut), .write_enable(MemWrite), .read_enable(MemToReg), .write_data(Db), .clk(clk), .xfer_size(XferSize), .read_data(MemOut));
 	
 	// MemToReg Mux
-	mux2to1_Nbit #(.N(64)) MuxMemToReg (.A(ALUOut), .B(MemOut), .en(MemToReg), .out(Dw));
+	mux4to1_64bit MuxMemToReg (.select(MemToReg[1:0]), .in({64'bx, NextPC, MemOut, ALUOut}), .out(Dw));
 	
 endmodule
 /*

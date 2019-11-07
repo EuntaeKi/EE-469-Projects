@@ -29,7 +29,7 @@ module InstructionFetch (clk, reset, UncondBr, BrTaken, Instruction);
 
 	// Register that hold the ProgramCounter
 	// Current PC gets fed into IM (Instruction Memory)
-	programCounter pc (.in(updatedPC), .clk, .reset, .out(currentPC));
+	ProgramCounter pc (.clk, .reset, .in(updatedPC), .out(currentPC));
 
 	// Feed the address and will Fetches the Instruction into the top-level module
 	instructmem instmem (.address(currentPC), .instruction(Instruction), .clk);	

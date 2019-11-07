@@ -10,7 +10,7 @@ module signExtend_testbench ();
 	logic [4:0] in;
 	logic [63:0] out;
 	
-	signExtend dut (.in, .out);
+	signExtend #(.N(5)) dut (.in(in), .out(out));
 	
 	initial begin
 		in = 5'd00110; #10;
