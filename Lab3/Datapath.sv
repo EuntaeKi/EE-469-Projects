@@ -1,5 +1,5 @@
 `timescale 1ns/10ps
-module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWrite, MemToReg, Instruction, NextPC, UpdateFlag, XferSize, foverflow, fnegative, fzero, fcout);
+module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWrite, MemToReg, Instruction, NextPC, UpdateFlag, XferSize, Db, foverflow, fnegative, fzero, fcout);
 	// Input Logic
 	input  logic        clk, reset;
 	input  logic        Reg2Loc, Reg2Write, RegWrite, MemWrite, UpdateFlag;
@@ -7,7 +7,7 @@ module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWri
 	input  logic [2:0]  ALUOp;
 	input  logic [3:0]  XferSize;
 	input  logic [31:0] Instruction;
-	input  logic [63:0] NextPC;
+	input  logic [63:0] Db, NextPC;
 	
 	// Output Logic
 	output logic        foverflow, fnegative, fzero, fcout;
@@ -15,7 +15,7 @@ module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWri
 	// Intermediate Logic
 	logic        overflow, negative, zero, cout;
 	logic [4:0]  Aw, Ab;
-	logic [63:0] Da, Db, Dw, Imm12_Ext, Imm9_Ext, ALUB, ALUOut, MemOut;
+	logic [63:0] Da, Dw, Imm12_Ext, Imm9_Ext, ALUB, ALUOut, MemOut;
 	
 	// Reg2Write Mux
 	// Rm = Instruction[4:0] when used
@@ -49,7 +49,8 @@ module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWri
 	alu TheAlu (.A(Da), .B(ALUB), .cntrl(ALUOp), .result(ALUOut), .negative(negative), .zero(zero), .overflow(overflow), .carry_out(cout));
 	
 	// Flag Register
-	FlagReg TheFlagRegister (.clk(clk), .reset(reset), .enable(UpdateFlag), .in({zero, negative, overflow, cout}), .out({fzero, fnegative, foverflow, fcout}));
+	FlagReg TheFlagRegister (.clk(clk), .reset(reset), .enable(UpdateFlag), .in({negative, overflow, cout}), .out({fnegative, foverflow, fcout}));
+	assign fzero = zero;
 	
 	// Data Memory
 	datamem DataMemory (.address(ALUOut), .write_enable(MemWrite), .read_enable(MemToReg), .write_data(Db), .clk(clk), .xfer_size(XferSize), .read_data(MemOut));

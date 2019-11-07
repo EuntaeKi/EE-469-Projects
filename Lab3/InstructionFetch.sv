@@ -1,6 +1,8 @@
-module InstructionFetch (clk, reset, UncondBr, BrTaken, Instruction, NextPC);
+module InstructionFetch (clk, reset, Db, UncondBr, BrTaken, Instruction, NextPC);
 	// Input Logic
-	input logic clk, reset, UncondBr, BrTaken;
+	input logic clk, reset, UncondBr;
+	input logic [1:0] BrTaken;
+	input logic [63:0] Db;
 	
 	// Output Logic
 	output logic [31:0] Instruction;
@@ -26,7 +28,7 @@ module InstructionFetch (clk, reset, UncondBr, BrTaken, Instruction, NextPC);
 
 	// Determine if branch instruction was given or not
 	// The result goes into PC regardless to update the PC
-	mux2to1_Nbit #(.N(64)) brMUX (.en(BrTaken), .a(currentPC + 3'b100), .b(branchedAddr), .out(updatedPC));
+	mux4to1_64bit brMUX (.select(BrTaken), .a({Db, branchedAddr, currentPC + 64'd4), .out(updatedPC));
 
 	// Register that hold the ProgramCounter
 	// Current PC gets fed into IM (Instruction Memory)
