@@ -1,22 +1,52 @@
 `timescale 1ns/10ps
-module CPUdatapath (clk, reset, Reg2Loc, RegWrite, ALUSrc, ALUOp, MemWrite, MemToReg, Instruction, foverflow, fnegative, fzero, fcout);
+module CPUdatapath (clk, reset, Reg2Loc, RegWrite, ALUSrc, ALUOp, MemRead, MemWrite, MemToReg, Instruction, XferSize, foverflow, fnegative, fzero, fcout);
 	// Input Logic
 	input  logic        clk, reset;
-	input  logic        Reg2Loc, RegWrite, MemWrite, MemToReg;
+	input  logic        Reg2Loc, RegWrite, MemRead, MemWrite, MemToReg;
 	input  logic [1:0]  ALUSrc;
 	input  logic [2:0]  ALUOp;
+	input  logic [3:0]  XferSize;
 	input  logic [31:0] Instruction;
 	
 	// Output Logic
 	output logic        foverflow, fnegative, fzero, fcout;
 	
 	// Intermediate Logic
-	logic [4:0] Ab;
+	logic [4:0]  Ab;
+	logic [63:0] Da, Db, Dw, Imm12_Ext, Imm9_Ext, ALUB, ALUOut, MemOut;
 	
+	// Reg2Loc Mux
 	// Rd = Instruction[4:0] when used
 	// Rm = Instruction[20:16] when used
-	// Db not used if neither are used
-	MUX5_2_1 MuxRegToLoc(.A(Instruction[4:0]), .B(Instruction[20:16]), .en(Reg2Loc), .out(Ab[4:0]));
+	// Otherwise value is not used
+	mux2to1_Nbit MuxReg2Loc #(.N(5)) (.A(Instruction[4:0]), .B(Instruction[20:16]), .en(Reg2Loc), .out(Ab[4:0]));
+	
+	// Imm12
+	// Zero Extended Instruction[21:10] when used
+	// Otherwise value is not used
+	ZeroExtend ExtendImm12 #(.N(12)) (.in(Instruction[21:10]), .out(Imm12_Ext));
+	
+	// Imm9
+	// Sign Extended Instruction[20:12] when used
+	// Otherwise value is not used
+	SignExtend ExtendImm9 #(.N(9)) (.in(Instruction[20:12]), .out(Imm9_Ext));
+	
+	// RegFile
+	// Rn = Instruction[9:5] when used
+	// Otherwise value is not used
+	regfile Register (.ReadData1(Da), .ReadData2(Db), .WriteData(Dw), .ReadRegister1(Instruction[9:5]), .ReadRegister2(Ab));
+	
+	// ALUSrc Mux
+	mux4to1_64bit MuxALUSrc(.select(ALUSrc), .in({64'bx, Imm9_Ext, Imm12_Ext, Db}, .out(ALUB));
+	
+	// ALU
+	alu TheAlu (.A(Da), .B(ALUB), .cntrl(ALUOp), .result(ALUOut), .negative(fnegative), .zero(fzero), .overflow(foverflow), .carry_out(fcout));
+	
+	// Data Memory
+	datamem DataMemory (.address(ALUOut), .write_enable(MemWrite), .read_enable(MemRead), .write_data(Db), .clk(clk), .xfer_size(XferSize), .read_data(MemOut));
+	
+	// MemToReg Mux
+	mux2to1_Nbit MuxMemToReg #(.N(64)) (.A(ALUOut), .B(MemOut), .en(MemToReg), .out(Dw));
 	
 endmodule
 /*

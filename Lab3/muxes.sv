@@ -1,5 +1,29 @@
 `timescale 1ns/10ps
 
+module mux2to1_Nbit #(parameter N = 1) (select, a, b, out);
+	input logic [N-1:0] a, b;
+	input logic en;
+	output logic [N-1:0] out;
+	logic [N-1:0] not_en_a, en_b;
+	logic noten;
+	
+	not #0.05 n0 (not_en, en);
+	
+	genvar i;
+	generate
+		for (i = 0; i < N; i++) begin: andGates
+			and #0.05 aa (not_en_a[i], not_en, a[i]);
+			and #0.05 ab (en_b[i], en, b[i]);
+		end
+	endgenerate
+
+	generate
+		for (i = 0; i < N; i++) begin: orGates
+			or #0.05 o (out[i], not_en_a[i], en_b[i]);
+		end
+	endgenerate
+endmodule
+
 module mux2to1 (select, in, out);
 	input  logic 		 select;
 	input  logic [1:0] in;
@@ -66,7 +90,33 @@ module mux32to1 (select, in, out);
 	
 endmodule
 
-module mux32to1_64 (select, in, out);
+module mux4to1_64bit (select, in, out);
+	input  logic [1:0]		  select;
+	input  logic [3:0][63:0] in;
+	output logic [63:0] 		  out;
+	
+	// In data bit matrix must be transposed into
+	// a new bus so that it can be managed
+	// by 64, 4to1 muxes.
+	logic [63:0][3:0] dataBus;
+	int i, j;
+	always_comb begin
+		for (i=0; i < 4; i++) begin
+			for (j=0; j < 64; j++) begin
+				dataBus[j][i] = in[i][j];
+			end
+		end
+	end
+	
+	genvar k;
+	generate
+		for (k=0; k < 64; k++) begin : gen_mux_64bit
+			mux4to1 muxByBit (.select(select[1:0]), .in(dataBus[k][3:0]), .out(out[k]));
+		end
+	endgenerate
+endmodule
+
+module mux32to1_64bit (select, in, out);
 	input  logic [4:0]		  select;
 	input  logic [31:0][63:0] in;
 	output logic [63:0] 		  out;
@@ -182,6 +232,27 @@ module mux32to1_tb ();
 	
 		in=32'b10101010101010101010101010101010;
 		for (i = 0; i < 2**5; i++) begin
+			select = i; #1000;
+		end
+		$stop;
+		
+	end
+endmodule 
+
+module mux4to1_64_tb ();
+	logic [1:0]			 select;
+	logic [3:0][63:0] in;
+	logic [63:0] 		 out;
+	
+	mux4to1_64 dut (select, in, out);
+	
+	integer i;
+	initial begin
+	
+		for (i = 0; i < 2**5; i++) begin
+			in[i] = i**4;
+		end
+		for (i = 0; i < 2**2; i++) begin
 			select = i; #1000;
 		end
 		$stop;

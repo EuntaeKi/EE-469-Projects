@@ -1,8 +1,8 @@
-module SignExtend #(parameter N = 5) (in, out);
+module ZeroExtend #(parameter N = 12) (in, out);
 	input  logic [N-1:0] in;
 	output logic [63:0]  out;
 
-	assign out[63:N] = {(64-N){in[N-1]}};	
+	assign out[63:N] = {(64-N){1'b0}};	
 	assign out[N-1:0] = in[N-1:0];
 endmodule
 
@@ -16,5 +16,4 @@ module signExtend_testbench ();
 		in = 5'd00110; #10;
 		in = 5'd10111;	#10;
 	end
-endmodule
-	
+endmodule 
