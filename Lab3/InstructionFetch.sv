@@ -28,7 +28,7 @@ module InstructionFetch (clk, reset, Db, UncondBr, BrTaken, Instruction, NextPC)
 
 	// Determine if branch instruction was given or not
 	// The result goes into PC regardless to update the PC
-	mux4to1_64bit brMUX (.select(BrTaken), .a({Db, branchedAddr, currentPC + 64'd4), .out(updatedPC));
+	mux4to1_64bit brMUX (.select(BrTaken), .in({Db, branchedAddr, currentPC + 64'd4}), .out(updatedPC));
 
 	// Register that hold the ProgramCounter
 	// Current PC gets fed into IM (Instruction Memory)
@@ -37,5 +37,5 @@ module InstructionFetch (clk, reset, Db, UncondBr, BrTaken, Instruction, NextPC)
 	// Feed the address and will Fetches the Instruction into the top-level module
 	instructmem instmem (.address(currentPC), .instruction(Instruction), .clk);
 
-	assign NextPC = updatedPc;
+	assign NextPC = updatedPC;
 endmodule 

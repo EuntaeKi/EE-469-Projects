@@ -158,6 +158,7 @@ module ControlSignal (Instruction, Reg2Loc, Reg2Write, ALUSrc, MemToReg, RegWrit
 				UncondBr   = 1'bX;
 				BrTaken    = 2'b00;
 				MemWrite   = 1'b0;
+				MemRead	  = 1'bX;
 				RegWrite   = 1'b0;
 				MemToReg   = 2'bX;
 				ALUSrc     = 2'bX;

@@ -9,8 +9,8 @@ module CPU (CLOCK_50, reset);
 	logic [63:0] Db, NextPC;
 	logic [31:0] Instruction;
 	logic [2:0] ALUOp;
-	logic [1:0] ALUSrc, MemToReg;
-	logic Reg2Loc, Reg2Write, RegWrite, MemWrite, MemRead, BrTaken, UncondBr, UpdateFlag, fzero, foverflow, fnegative, fcout;
+	logic [1:0] ALUSrc, MemToReg, BrTaken;
+	logic Reg2Loc, Reg2Write, RegWrite, MemWrite, MemRead, UncondBr, UpdateFlag, fzero, foverflow, fnegative, fcout;
 
 	clockDivider clock (.clk(CLOCK_50), .divided_clocks);
 	ControlSignal signal (.fzero, .Instruction, .Reg2Loc, .Reg2Write, .ALUSrc, .MemToReg, .RegWrite, .MemWrite, .MemRead, .BrTaken, .UncondBr, .ALUOp, .UpdateFlag);
