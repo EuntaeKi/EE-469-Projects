@@ -20,17 +20,17 @@ module Datapath (clk, reset, Reg2Loc, RegWrite, ALUSrc, ALUOp, MemWrite, MemToRe
 	// Rd = Instruction[4:0] when used
 	// Rm = Instruction[20:16] when used
 	// Otherwise value is not used
-	mux2to1_Nbit MuxReg2Loc #(.N(5)) (.A(Instruction[4:0]), .B(Instruction[20:16]), .en(Reg2Loc), .out(Ab[4:0]));
+	mux2to1_Nbit #(.N(5)) MuxReg2Loc (.A(Instruction[4:0]), .B(Instruction[20:16]), .en(Reg2Loc), .out(Ab[4:0]));
 	
 	// Imm12
 	// Zero Extended Instruction[21:10] when used
 	// Otherwise value is not used
-	SignExtend ExtendImm12 #(.N(13)) (.in({0, Instruction[21:10]}), .out(Imm12_Ext));
+	SignExtend #(.N(13)) ExtendImm12 (.in({0, Instruction[21:10]}), .out(Imm12_Ext));
 	
 	// Imm9
 	// Sign Extended Instruction[20:12] when used
 	// Otherwise value is not used
-	SignExtend ExtendImm9 #(.N(9)) (.in(Instruction[20:12]), .out(Imm9_Ext));
+	SignExtend #(.N(9)) ExtendImm9 (.in(Instruction[20:12]), .out(Imm9_Ext));
 	
 	// RegFile
 	// Rn = Instruction[9:5] when used
@@ -38,7 +38,7 @@ module Datapath (clk, reset, Reg2Loc, RegWrite, ALUSrc, ALUOp, MemWrite, MemToRe
 	regfile Register (.ReadData1(Da), .ReadData2(Db), .WriteData(Dw), .ReadRegister1(Instruction[9:5]), .ReadRegister2(Ab));
 	
 	// ALUSrc Mux
-	mux4to1_64bit MuxALUSrc(.select(ALUSrc), .in({64'bx, Imm9_Ext, Imm12_Ext, Db}, .out(ALUB));
+	mux4to1_64bit MuxALUSrc(.select(ALUSrc), .in({64'bx, Imm9_Ext, Imm12_Ext, Db}), .out(ALUB));
 	
 	// ALU
 	alu TheAlu (.A(Da), .B(ALUB), .cntrl(ALUOp), .result(ALUOut), .negative(negative), .zero(zero), .overflow(overflow), .carry_out(cout));
@@ -50,7 +50,7 @@ module Datapath (clk, reset, Reg2Loc, RegWrite, ALUSrc, ALUOp, MemWrite, MemToRe
 	datamem DataMemory (.address(ALUOut), .write_enable(MemWrite), .read_enable(MemToReg), .write_data(Db), .clk(clk), .xfer_size(XferSize), .read_data(MemOut));
 	
 	// MemToReg Mux
-	mux2to1_Nbit MuxMemToReg #(.N(64)) (.A(ALUOut), .B(MemOut), .en(MemToReg), .out(Dw));
+	mux2to1_Nbit #(.N(64)) MuxMemToReg (.A(ALUOut), .B(MemOut), .en(MemToReg), .out(Dw));
 	
 endmodule
 /*
