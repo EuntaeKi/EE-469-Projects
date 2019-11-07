@@ -50,6 +50,7 @@ module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWri
 	alu TheAlu (.A(Da), .B(ALUB), .cntrl(ALUOp), .result(ALUOut), .negative(negative), .zero(zero), .overflow(overflow), .carry_out(cout));
 	
 	// Flag Register
+	// Zero flag is updated immediately - others update with the clock.
 	FlagReg TheFlagRegister (.clk(clk), .reset(reset), .enable(UpdateFlag), .in({negative, overflow, cout}), .out({fnegative, foverflow, fcout}));
 	assign fzero = zero;
 	
