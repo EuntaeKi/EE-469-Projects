@@ -1,37 +1,18 @@
-module CPUtop (CLOCK_50, reset);
+module CPU (CLOCK_50, reset);
+	// Input Logic
 	input logic CLOCK_50, reset;
+	
+	// Divided Clock
 	logic [31:0] divided_clocks;
+	
+	// Control Signal logics
 	logic [31:0] Instruction;
 	logic [2:0] ALUOp;
-	logic Reg2Loc, ALUSrc, MemToReg, RegWrite, MemWrite, BrTaken, UncondBr, Zero;
+	logic Reg2Loc, ALUSrc, MemToReg, RegWrite, MemWrite, BrTaken, UncondBr, fzero, foverflow, fnegative, fcout;
 	
 	clockDivider clock (.clk(CLOCK_50), .divided_clocks);
+	ControlSignal signal (.*);
+	InstructionFetch instFetch (.*, .clk(divided_clocks[5]));
+	DataPath data (.*, .clk(CLOCK_50), XferSize(4'b1000));
 
-	
-	always_comb begin
-		if (opCode[31] & opCode[30] & opCode[25] & opCode[24])
-			ALUOp = 3'b011;
-		else if (opCode[31] & opCode[30] & ~opCode[25] & ~opCode[24])
-			ALUOp = 3'b010;
-		else if (opCode[31] & ~opCode[30] & opCode[25] & opCode[24])
-			ALUOp = 3'b010;
-		else if (opCode[31:28] == 4'b1011)
-			ALUOp = 3'b0;
-		else
-			ALUOp = 3'bXXX;
-	end
-	
-	assign Rn = opCode[9:5];
-	assign Rm = opCode[20:16];
-	assign Rd = opCode[4:0];
-	assign AddI12 = opCode[21:10];
-	assign CondAddr19 = opCode[23:5];
-	assign BrAddr26 = opCode[25:0];
-	assign UncondBr = ~opCode[31];
-	assign BrTaken = (Zero & (opCode[31:28] == 4'b1011)) | ~opCode[31];
-	assign MemWrite = opCode[30] & opCode[29] & ~opCode[22];
-	assign RegWrite = (opCode[25] & opCode[24]) | opCode[22];
-	assign RegToMem = opCode[22];
-	assign ALUSrc = opCode[30] & opCode[29];
-	assign Reg2Loc = opCode[25] & opCode[24];
 endmodule 
