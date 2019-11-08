@@ -1,8 +1,10 @@
-// Stored as {Negative, Cout, Overflow, Zero}
+`timescale 1ns/10ps
+
 module FlagReg (clk, reset, enable, in, out);
+
 	// Input Logic
-	input  logic clk, reset, enable;
-	input  logic [3:0] in;
+	input  logic [3:0] in; // {Negative, Cout, Overflow, Zero}
+	input  logic 		 clk, reset, enable;
 	
 	// Output Logic
 	output logic [3:0] out;

@@ -1,8 +1,8 @@
 module ProgramCounter (clk, reset, in, out);
 	
 	// Input Logic
-	input  logic        clk, reset;
 	input  logic [63:0] in;
+	input  logic        clk, reset;
 	
 	// Output Logic
 	output logic [63:0] out;
