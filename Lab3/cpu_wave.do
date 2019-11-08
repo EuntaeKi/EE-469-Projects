@@ -2,18 +2,15 @@ onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate /cpu_tb/clk
 add wave -noupdate /cpu_tb/reset
+add wave -noupdate -radix unsigned /cpu_tb/dut/instFetch/pc/out
 add wave -noupdate /cpu_tb/dut/signal/Instruction
-add wave -noupdate /cpu_tb/dut/signal/ALUOp
-add wave -noupdate /cpu_tb/dut/signal/UpdateFlag
-add wave -noupdate /cpu_tb/dut/signal/UncondBr
-add wave -noupdate /cpu_tb/dut/signal/BrTaken
-add wave -noupdate /cpu_tb/dut/signal/MemWrite
-add wave -noupdate /cpu_tb/dut/signal/MemRead
-add wave -noupdate /cpu_tb/dut/signal/RegWrite
-add wave -noupdate /cpu_tb/dut/signal/MemToReg
-add wave -noupdate /cpu_tb/dut/signal/ALUSrc
-add wave -noupdate /cpu_tb/dut/signal/Reg2Loc
-add wave -noupdate /cpu_tb/dut/signal/Reg2Write
+add wave -noupdate -group Flags /cpu_tb/dut/signal/fnegative
+add wave -noupdate -group Flags /cpu_tb/dut/signal/fcout
+add wave -noupdate -group Flags /cpu_tb/dut/signal/foverflow
+add wave -noupdate -group Flags /cpu_tb/dut/signal/fzero
+add wave -noupdate -group Flags /cpu_tb/dut/signal/czero
+add wave -noupdate -radix decimal /cpu_tb/dut/data/Register/registerData
+add wave -noupdate -radix decimal /cpu_tb/dut/data/DataMemory/mem
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {0 ps} 0}
 quietly wave cursor active 1

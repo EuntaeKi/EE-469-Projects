@@ -11,6 +11,9 @@ module InstructionFetch (clk, reset, Db, UncondBr, BrTaken, Instruction, NextPC)
 	// Intermediate Logic
 	logic [63:0] condAddr, brAddr, muxedAddr, shiftedAddr, branchedAddr, currentPC, updatedPC;
 	
+	// Value stored in X30 when BL is called
+	fullAdder_64 advancePc (.result(NextPC), .A(currentPC), .B(64'd4), .cin(1'b0), .cout());
+	
 	// Sign Extend the address inputs
 	// Instruction[23:5] is CondAddr19
 	// Instruction[25:0] is BrAddr26
@@ -21,14 +24,14 @@ module InstructionFetch (clk, reset, Db, UncondBr, BrTaken, Instruction, NextPC)
 	mux2to1_Nbit #(.N(64)) condMUX (.en(UncondBr), .a(condAddr), .b(brAddr), .out(muxedAddr));
 	
 	// Shift the muxedAddr by 2 bits to multiply it by 4
-	shifter shift (.value(condAddr), .direction(1'b0), .distance(6'b000010), .result(shiftedAddr));
+	shifter shift (.value(muxedAddr), .direction(1'b0), .distance(6'b000010), .result(shiftedAddr));
 
 	// Add the shiftedAddr with currentPC
 	fullAdder_64 add (.result(branchedAddr), .A(currentPC), .B(shiftedAddr), .cin(1'b0), .cout());
 
 	// Determine if branch instruction was given or not
 	// The result goes into PC regardless to update the PC
-	mux4to1_64bit brMUX (.select(BrTaken), .in({64'b0, Db, branchedAddr, currentPC + 64'd4}), .out(updatedPC));
+	mux4to1_64bit brMUX (.select(BrTaken), .in({64'b0, Db, branchedAddr, NextPC}), .out(updatedPC));
 
 	// Register that hold the ProgramCounter
 	// Current PC gets fed into IM (Instruction Memory)
@@ -36,6 +39,4 @@ module InstructionFetch (clk, reset, Db, UncondBr, BrTaken, Instruction, NextPC)
 
 	// Feed the address and will Fetches the Instruction into the top-level module
 	instructmem instmem (.address(currentPC), .instruction(Instruction), .clk);
-
-	assign NextPC = updatedPC;
 endmodule 

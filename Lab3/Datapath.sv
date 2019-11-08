@@ -1,5 +1,5 @@
 `timescale 1ns/10ps
-module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWrite, MemRead, MemToReg, Instruction, NextPC, UpdateFlag, XferSize, Db, foverflow, fnegative, fzero, fcout);
+module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWrite, MemRead, MemToReg, Instruction, NextPC, UpdateFlag, XferSize, Db, foverflow, fnegative, fzero, czero, fcout);
 	// Input Logic
 	input  logic        clk, reset;
 	input  logic        Reg2Loc, Reg2Write, RegWrite, MemWrite, MemRead, UpdateFlag;
@@ -10,7 +10,7 @@ module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWri
 	input  logic [63:0] NextPC;
 	
 	// Output Logic
-	output logic        foverflow, fnegative, fzero, fcout;
+	output logic        foverflow, fnegative, fzero, fcout, czero;
 	output logic [63:0] Db;
 	
 	// Intermediate Logic
@@ -50,9 +50,9 @@ module Datapath (clk, reset, Reg2Loc, Reg2Write, RegWrite, ALUSrc, ALUOp, MemWri
 	alu TheAlu (.A(Da), .B(ALUB), .cntrl(ALUOp), .result(ALUOut), .negative(negative), .zero(zero), .overflow(overflow), .carry_out(cout));
 	
 	// Flag Register
-	// Zero flag is updated immediately - others update with the clock.
-	FlagReg TheFlagRegister (.clk(clk), .reset(reset), .enable(UpdateFlag), .in({negative, overflow, cout}), .out({fnegative, foverflow, fcout}));
-	assign fzero = zero;
+	// cZero flag is updated immediately - others update with the clock.
+	FlagReg TheFlagRegister (.clk(clk), .reset(reset), .enable(UpdateFlag), .in({negative, cout, overflow, zero}), .out({fnegative, fcout, foverflow, fzero}));
+	assign czero = zero;
 	
 	// Data Memory
 	datamem DataMemory (.address(ALUOut), .write_enable(MemWrite), .read_enable(MemRead), .write_data(Db), .clk(clk), .xfer_size(XferSize), .read_data(MemOut));

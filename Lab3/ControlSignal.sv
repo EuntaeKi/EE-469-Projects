@@ -1,7 +1,7 @@
-module ControlSignal (Instruction, Reg2Loc, Reg2Write, ALUSrc, MemToReg, RegWrite, MemWrite, MemRead, BrTaken, UncondBr, ALUOp, UpdateFlag, fzero, foverflow, fnegative, fcout);
+module ControlSignal (Instruction, Reg2Loc, Reg2Write, ALUSrc, MemToReg, RegWrite, MemWrite, MemRead, BrTaken, UncondBr, ALUOp, UpdateFlag, czero, fzero, foverflow, fnegative, fcout);
     
     // Input Logic
-    input logic fzero, foverflow, fnegative, fcout;
+    input logic czero, fzero, foverflow, fnegative, fcout;
     input logic [31:0] Instruction;
 
     // Output Logic
@@ -72,12 +72,12 @@ module ControlSignal (Instruction, Reg2Loc, Reg2Write, ALUSrc, MemToReg, RegWrit
 				ALUOp 	  = 3'b000;
 				UpdateFlag = 1'b0;
 				UncondBr   = 1'b0;
-				BrTaken    = {1'b0, fzero};
+				BrTaken    = {1'b0, czero};
 				MemWrite   = 1'b0;
 				MemRead	  = 1'bX;
 				RegWrite   = 1'b0;
 				MemToReg   = 2'bX;
-				ALUSrc     = 2'bX;
+				ALUSrc     = 2'b00;
 				Reg2Loc    = 1'b0;
 				Reg2Write  = 1'bX;
 			end
@@ -148,7 +148,7 @@ module ControlSignal (Instruction, Reg2Loc, Reg2Write, ALUSrc, MemToReg, RegWrit
 				RegWrite   = 1'b0;
 				MemToReg   = 2'bX;
 				ALUSrc     = 2'b10;
-				Reg2Loc    = 1'bX;
+				Reg2Loc    = 1'b0;
 				Reg2Write  = 1'b0;
 			end
 			
