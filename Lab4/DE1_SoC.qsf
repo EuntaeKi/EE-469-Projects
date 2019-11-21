@@ -679,6 +679,7 @@ set_global_assignment -name SYSTEMVERILOG_FILE FlagReg.sv
 set_global_assignment -name SYSTEMVERILOG_FILE SignExtend.sv
 set_global_assignment -name SYSTEMVERILOG_FILE regfile.sv
 set_global_assignment -name SYSTEMVERILOG_FILE register64.sv
+set_global_assignment -name SYSTEMVERILOG_FILE register32.sv
 set_global_assignment -name SYSTEMVERILOG_FILE alu.sv
 set_global_assignment -name SYSTEMVERILOG_FILE alu_1bit.sv
 set_global_assignment -name SYSTEMVERILOG_FILE muxes.sv

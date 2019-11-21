@@ -3,30 +3,44 @@
 module CPU (clk, reset);
 	// Input Logic
 	input logic clk, reset;
-
-	// Control Signals
-	logic [31:0] Instruction;
-	logic [2:0]  ALUOp;
-	logic [1:0]  ALUSrc, Mem2Reg, BrTaken;
-	logic 		 Reg2Loc, Reg2Write, RegWrite, MemWrite, MemRead, UncondBr;
-
-	// Flag Signals
-	logic        FlagWrite, NegativeFlag, CoutFlag, OverflowFlag, ZeroFlag;
-
-	// Logic passed between modules
-	logic [63:0] Db, NoBranchPC;
-	logic 		 ALUZero;
 	
-	InstructionFetch instFetch (.clk, .reset, .Instruction, 
-											.BrTaken, .UncondBr, .Db, .NoBranchPC);
+	/*** Instruction Fetch Stage ***/
+	logic [63:0] IFPC, IFPC_NoB;
+	logic [31:0] IFInst;
+	InstructionFetch theFetchStage (.clk, .reset, .IFInst, .BrTaken, .UncondBr, .Db, .NoBranchPC);
+	/*----------------------------*/
 	
-	ControlSignal signal (.Instruction, .ALUOp, .ALUSrc, .Mem2Reg, .BrTaken, 
-									.Reg2Loc, .Reg2Write, .RegWrite, .MemWrite, .MemRead, .UncondBr, 
-										.FlagWrite, .NegativeFlag, .CoutFlag, .OverflowFlag, .ZeroFlag, .ALUZero);
-										
-	Datapath data (.clk, .reset, .Instruction, .ALUOp, .ALUSrc, .Mem2Reg, .Reg2Loc,
-							.Reg2Write, .RegWrite, .MemWrite, .MemRead, .FlagWrite, .NegativeFlag, 
-								.CoutFlag, .OverflowFlag, .ZeroFlag, .ALUZero, .Db, .NoBranchPC, .XferSize(4'b1000));
+	// IF -> ID Setup
+	logic [63:0] IDPC, IDPC_NoB;
+	logic [31:0] IDInst;
+	InstructionRegister theInstReg ();
+	
+	/*** Decode Stage ***/
+	InstructionDecode theDecStage();
+	/*------------------*/
+	
+	// ID -> Exec Setup
+	ControlSignal theControlSignals();
+	ForwardingUnit theForwardingUnit();
+	ExecRegister theExReg();
+	
+	/*** Exectue Stage ***/
+	Execute theExStage();
+	/*-------------------*/
+	
+	// Exec -> Mem Setup
+	MemoryRegister theMemStage();
+	
+	/*** Memory Stage ***/
+	Memory theMemStage();
+	/*------------------*/
+	
+	// Mem -> Wb Setup
+	WbRegister theWbReg();
+	
+	/*** WriteBack Stage ***/
+	WriteBack theWbStage();
+	/*---------------------*/
 
 endmodule 
 
