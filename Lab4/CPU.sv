@@ -5,15 +5,15 @@ module CPU (clk, reset);
 	input logic clk, reset;
 	
 	/*** Instruction Fetch Stage ***/
-	logic [63:0] IFPC, IFPC_NoB;
+	logic [63:0] IFPC;
 	logic [31:0] IFInst;
-	InstructionFetch theFetchStage (.clk, .reset, .IFInst, .BrTaken, .UncondBr, .Db, .NoBranchPC);
+	InstructionFetch theFetchStage (.instruction(IFInst), .currentPc(IFPC), .branchAddress(nextPc), .brTaken(takeBranch), .clk, .reset);
 	/*----------------------------*/
 	
 	// IF -> ID Setup
-	logic [63:0] IDPC, IDPC_NoB;
+	logic [63:0] IDPC;
 	logic [31:0] IDInst;
-	InstructionRegister theInstReg ();
+	InstructionRegister theInstReg (.IFPC, .IFInst, .IDPC, .IDInst, .clk, .reset);
 	
 	/*** Decode Stage ***/
 	InstructionDecode theDecStage();
@@ -29,6 +29,8 @@ module CPU (clk, reset);
 	/*-------------------*/
 	
 	// Exec -> Mem Setup
+	logic [63:0] nextPc;
+	logic 		 takeBranch;
 	MemoryRegister theMemStage();
 	
 	/*** Memory Stage ***/

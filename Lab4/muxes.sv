@@ -90,6 +90,32 @@ module mux32to1 (select, in, out);
 	
 endmodule
 
+module mux2to1_64bit (select, in, out);
+	input  logic 		   	 select;
+	input  logic [1:0][63:0] in;
+	output logic [63:0] 		  out;
+	
+	// In data bit matrix must be transposed into
+	// a new bus so that it can be managed
+	// by 64, 2to1 muxes.
+	logic [63:0][1:0] dataBus;
+	int i, j;
+	always_comb begin
+		for (i=0; i < 2; i++) begin
+			for (j=0; j < 64; j++) begin
+				dataBus[j][i] = in[i][j];
+			end
+		end
+	end
+	
+	genvar k;
+	generate
+		for (k=0; k < 64; k++) begin : gen_mux_64bit
+			mux2to1 muxByBit (.select(select), .in(dataBus[k][1:0]), .out(out[k]));
+		end
+	endgenerate
+endmodule
+
 module mux4to1_64bit (select, in, out);
 	input  logic [1:0]		  select;
 	input  logic [3:0][63:0] in;
