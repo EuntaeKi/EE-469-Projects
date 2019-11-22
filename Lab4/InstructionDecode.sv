@@ -1,6 +1,6 @@
 `timescale 1ns/10ps
 
-module InstructionDecode (clk, reset, Reg2Loc, RegWrite, ALUSrc, Dw, Instruction, Da, Db, MemAddr9Ext, Imm12Ext);
+module InstructionDecode (clk, reset, Reg2Loc, RegWrite, ALUSrc, Dw, Instruction, DecDa, DecDb, DecMemAddr9Ext, DecImm12Ext);
     // Input Logic (clk & Control Signals)
     input  logic        clk, reset, Reg2Loc, RegWrite;
     input  logic [1:0]  ALUSrc;

@@ -16,29 +16,32 @@ module CPU (clk, reset);
 	InstructionRegister theInstReg (.IFPC, .IFInst, .IDPC, .IDInst, .clk, .reset);
 	
 	/*** Decode Stage ***/
-	InstructionDecode theDecStage();
+	logic [63:0] DecDa, DecDb;
+	InstructionDecode theDecStage(.clk, .reset, .Reg2Loc, .RegWrite, .ALUSrc, .Dw, .Instruction, .DecDa, .DecDb, .DecMemAddr9Ext, .DecImm12Ext);
 	/*------------------*/
 	
 	// ID -> Exec Setup
 	ControlSignal theControlSignals();
 	ForwardingUnit theForwardingUnit();
-	ExecRegister theExReg();
+
+	logic [63:0] ExDa, ExDb, ExMemAddr9Ext, ExImm12Ext;
+	DecodeRegister theDecReg(.clk, .reset, .DecDa, .DecDb, .ExDa, .ExDb, .DecMemAddr9Ext, .DecImm12Ext, .ExMemAddr9Ext, .ExImm12Ext);
 	
 	/*** Exectue Stage ***/
 	Execute theExStage();
 	/*-------------------*/
 	
 	// Exec -> Mem Setup
-	logic [63:0] nextPc;
-	logic 		 takeBranch;
-	MemoryRegister theMemStage();
+	ExecRegister theExReg();
 	
 	/*** Memory Stage ***/
+	logic [63:0] nextPc;
+	logic 		 takeBranch;
 	Memory theMemStage();
 	/*------------------*/
 	
 	// Mem -> Wb Setup
-	WbRegister theWbReg();
+	MemoryRegister theMemReg();
 	
 	/*** WriteBack Stage ***/
 	WriteBack theWbStage();
