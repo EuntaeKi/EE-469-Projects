@@ -16,8 +16,9 @@ module CPU (clk, reset);
 	InstructionRegister theInstReg (.IFPC, .IFInst, .IDPC, .IDInst, .clk, .reset);
 	
 	/*** Decode Stage ***/
-	logic [63:0] DecDa, DecDb;
-	InstructionDecode theDecStage(.clk, .reset, .Reg2Loc, .RegWrite, .ALUSrc, .Dw, .Instruction, .DecDa, .DecDb, .DecMemAddr9Ext, .DecImm12Ext);
+	logic [63:0] DecDa, DecDb, DecMemAddr9Ext, DecImm12Ext;
+	logic [4:0] DecAa, DecAb, DecAw;
+	InstructionDecode theDecStage(.clk, .reset, .Reg2Loc, .RegWrite, .ALUSrc, .DecDw, .Instruction(IDInst), .DecDa, .DecDb, .DecAb, .DecAw, .DecMemAddr9Ext, .DecImm12Ext);
 	/*------------------*/
 	
 	// ID -> Exec Setup
@@ -28,7 +29,7 @@ module CPU (clk, reset);
 	DecodeRegister theDecReg(.clk, .reset, .DecDa, .DecDb, .ExDa, .ExDb, .DecMemAddr9Ext, .DecImm12Ext, .ExMemAddr9Ext, .ExImm12Ext);
 	
 	/*** Exectue Stage ***/
-	Execute theExStage();
+	Execute theExStage(.clk, .reset, .ExDa, .ExDb, .NegativeFlag, .CoutFlag, .OverflowFlag, .ZeroFlag);
 	/*-------------------*/
 	
 	// Exec -> Mem Setup
