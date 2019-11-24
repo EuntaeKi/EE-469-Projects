@@ -1,9 +1,9 @@
 `timescale 1ns/10ps
 
-module InstructionDecode (clk, reset, Reg2Loc, RegWrite, ALUSrc, DecDw, Instruction, DecDa, DecDb, DecAa, DecAb, DecAw, DecMemAddr9Ext, DecImm12Ext);
+module InstructionDecode (clk, reset, DecReg2Loc, DecRegWrite, DecReg2Write, DecALUSrc, DecDw, Instruction, DecDa, DecDb, DecAa, DecAb, DecAw, DecMemAddr9Ext, DecImm12Ext);
     // Input Logic (clk & Control Signals)
-    input  logic        clk, reset, Reg2Loc, RegWrite;
-    input  logic [1:0]  ALUSrc;
+    input  logic        clk, reset, DecReg2Loc, DecRegWrite, DecReg2Write;
+    input  logic [1:0]  DecALUSrc;
     input  logic [63:0] DecDw;
     input  logic [31:0] Instruction;
 
@@ -18,11 +18,11 @@ module InstructionDecode (clk, reset, Reg2Loc, RegWrite, ALUSrc, DecDw, Instruct
 
 	// Reg2Write Mux
 	// Determines which register address gets used for Aw in the register file (Rd or X30)
-	mux2to1_Nbit #(.N(5)) MuxReg2Write (.en(RegWrite), .a(Instruction[4:0]), .b(5'd30), .out(DecAw));
+	mux2to1_Nbit #(.N(5)) MuxReg2Write (.en(DecReg2Write), .a(Instruction[4:0]), .b(5'd30), .out(DecAw));
 
     // Reg2Loc Mux
 	// Determines which register address gets used for Ab in the register file (Rd or Rm)
-	mux2to1_Nbit #(.N(5)) MuxReg2Loc (.en(Reg2Loc), .a(Instruction[4:0]), .b(Instruction[20:16]), .out(DecAb));
+	mux2to1_Nbit #(.N(5)) MuxReg2Loc (.en(DecReg2Loc), .a(Instruction[4:0]), .b(Instruction[20:16]), .out(DecAb));
 
     /* Register File for the CPU 
      * ReadData1 = DecDa, ReadData2 = Db, WriteData = Dw
@@ -31,7 +31,7 @@ module InstructionDecode (clk, reset, Reg2Loc, RegWrite, ALUSrc, DecDw, Instruct
      */
     regfile RegisterFile (.ReadData1(DecDa), .ReadData2(Db), .WriteData(DecDw)
                         , .ReadRegister1(Instruction[9:5]), .ReadRegister2(DecAb), .WriteRegister(DecAw)
-                        , .RegWrite, .clk);
+                        , .RegWrite(DecRegWrite), .clk);
 
     // Imm12Ext
 	// Zero Extended Instruction[21:10] when used
@@ -42,7 +42,7 @@ module InstructionDecode (clk, reset, Reg2Loc, RegWrite, ALUSrc, DecDw, Instruct
 	SignExtend #(.N(9)) ExtendImmMem (.in(Instruction[20:12]), .out(DecMemAddr9Ext));
 
     // ALUSrc Mux
-	mux4to1_64bit MuxALUSrc (.select(ALUSrc), .in({64'bx, DecMemAddr9Ext, DecImm12Ext, Db}), .out(DecDb));
+	mux4to1_64bit MuxALUSrc (.select(DecALUSrc), .in({64'bx, DecMemAddr9Ext, DecImm12Ext, Db}), .out(DecDb));
 
     assign DecDa = Instruction[9:5];
 endmodule
