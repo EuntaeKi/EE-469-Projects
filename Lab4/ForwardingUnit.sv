@@ -1,3 +1,5 @@
+`timescale 1ns/10ps
+
 module ForwardingUnit(Forward2Da, Forward2Db, ExRd, ExRm, ExRn, MemRegWrite, MemRd, WbRegWrite, WbRd);
 	input  logic [4:0] ExRd, ExRm, ExRn, MemRegWrite, MemRd, WbRd;
 	input  logic       MemRegWrite, WbRegWrite;

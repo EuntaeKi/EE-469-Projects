@@ -18,45 +18,58 @@ module CPU (clk, reset);
 	/*** Decode Stage ***/
 	logic [63:0] DecDa, DecDb, DecMemAddr9Ext, DecImm12Ext;
 	logic [4:0] DecAa, DecAb, DecAw;
-	InstructionDecode theDecStage(.clk, .reset, .DecReg2Loc, .DecRegWrite, .DecReg2Write, .DecALUSrc, .DecDw, .Instruction(IDInst), .DecDa, .DecDb, .DecAb, .DecAw, .DecMemAddr9Ext, .DecImm12Ext);
+	InstructionDecode theDecStage(.clk, .reset, .DecReg2Loc, .WbRegWrite, .DecReg2Write, .DecALUSrc, .DecDw, .Instruction(IDInst), .DecDa, .DecDb, .DecAb, .DecAw, .DecMemAddr9Ext, .DecImm12Ext);
 	/*------------------*/
 	
 	// ID -> Exec Setup
-	logic [2:0] ExALUOp;
+	logic [2:0] DecALUOp;
 	logic [1:0] DecBrTaken, DecALUSrc, DecMem2Reg;
 	logic 		DecReg2Loc, UncondBr, DecReg2Write, DecRegWrite, DecBrTaken;
-	logic		ExFlagWrite, ExZero, ExNegative, ExOverflow, ExCout;
-	logic		MemWrite, MemRead;
-	ControlSignal theControlSignals(.Instruction(DecInst), .ALUOp(ExALUOp), .ALUSrc(DecALUSrc), .Mem2Reg(DecMem2Reg), .BrTaken(DecBrTaken),
-									.Reg2Loc(DecReg2Loc), .Reg2Write(DecReg2Write), .RegWrite(DecRegWrite), .MemWrite, .MemRead, .UncondBr, 
-									.FlagWrite(ExFlagWrite), .NegativeFlag(ExNegative), .CoutFlag(ExCout), .OverflowFlag(ExOverflow), .ZeroFlag(ExZero), .ALUZero(ExZeroInst));
+	logic		DecFlagWrite, DecMemWrite, DecMemRead;
+	logic		ExZero, ExNegative, ExOverflow, ExCout;
+	ControlSignal theControlSignals(.Instruction(DecInst), .ALUOp(DecALUOp), .ALUSrc(DecALUSrc), .Mem2Reg(DecMem2Reg), .BrTaken(DecBrTaken),
+									.Reg2Loc(DecReg2Loc), .Reg2Write(DecReg2Write), .RegWrite(DecRegWrite), .MemWrite(DecMemWrite), .MemRead(DecMemRead), .UncondBr, 
+									.FlagWrite(DecFlagWrite), .NegativeFlag(ExNegative), .CoutFlag(ExCout), .OverflowFlag(ExOverflow), .ZeroFlag(ExZero), .ALUZero(ExZeroInst));
 	
 	ForwardingUnit	theForwadingUnit(.ForwardDa, .ForwardDb, .DecRd, .DecRm, .DecRn, .MemRegWrite, .MemRd, .WbRegWrite, .WbRd);
 														
 	logic [63:0] ExDa, ExDb, ExMemAddr9Ext, ExImm12Ext;
-	DecodeRegister theDecReg(.clk, .reset, .DecDa, .DecDb, .ExDa, .ExDb, .DecMemAddr9Ext, .DecImm12Ext, .ExMemAddr9Ext, .ExImm12Ext);
+	logic [2:0]  ExALUOp;
+	logic [1:0]  ExMem2Reg;
+	logic        ExMemWrite, ExMemRead, ExFlagWrite;
+	DecodeRegister theDecReg(.clk, .reset, .DecDa, .DecDb, .DecALUOp, .DecMem2Reg, .DecMemWrite, .DecMemRead, .DecFlagWrite, .DecRegWrite, .DecMemAddr9Ext, .DecImm12Ext,
+							 .ExDa, .ExDb, .ExALUOp, .ExMem2Reg, .ExMemWrite, .ExMemRead, .ExFlagWrite, .ExRegWrite, .ExMemAddr9Ext, .ExImm12Ext);
 	
+
 	/*** Exectue Stage ***/
 	logic [63:0] ExALUOutput;
 	logic        ExZeroInst;	// Used in ControlSignal?
+	// Need to clean up the flag signals
 	Execute theExStage(.clk, .reset, .ExDa, .ExDb, .ExALUOp, .ExFlagWrite, .ExNegative, .ExCout, .ExOverflow, .ExZero, .ExZeroInst, .ExALUOutput);
 	/*-------------------*/
 	
 	// Exec -> Mem Setup
-	logic [63:0] ExRegALUOutput, ExRegDecDb;
-	ExecRegister theExReg(.clk, .reset, .DecDb, .ExALUOutput, .ExRegDecDb, .ExRegALUOutput);
+	logic [63:0] MemDb, MemALUOutput;
+	logic [1:0]	 MemMem2Reg;
+	logic 		 MemMemWrite, MemMemRead, MemRegWrite;
+	ExecRegister theExReg(.clk, .reset, .ExDb, .ExALUOutput, .ExMem2Reg, .ExMemWrite, .ExMemRead, .ExRegWrite, 
+							.MemDb, .MemALUOutput, .MemMem2Reg, .MemMemWrite, .MemMemRead, .MemRegWrite);
 	
 	/*** Memory Stage ***/
 	logic [63:0] nextPC, MemOutput;
 	logic 		 takeBranch;
-	Memory theMemStage(.clk, .reset, .address(ExRegOutput), .MemWrite, .MemRead, .MemWriteData(ExRegDecDb), .MemOutput);
+	Memory theMemStage(.clk, .reset, .address(MemALUOutput), .MemWrite(MemMemWrite), .MemRead(MemMemRead), .MemWriteData(MemDb), .MemOutput);
 	/*------------------*/
 	
 	// Mem -> Wb Setup
-	MemoryRegister theMemReg();
+	logic [63:0] WbMemOutput, WbALUOutput;
+	logic [1:0]  WbMem2Reg;
+	logic 		 WbRegWrite;
+	MemoryRegister theMemReg(.clk, .reset, .MemOutput, .MemALUOutput, .MemMem2Reg, .MemRegWrite, .WbMemOutput, .WbALUOutput, .WbMem2Reg, .WbRegWrite);
 	
 	/*** WriteBack Stage ***/
-	WriteBack theWbStage();
+	logic [63:0] WbOutput;
+	WriteBack theWbStage(.clk, .reset, .MemOutput(WbMemOutput), .ALUOutput(WbALUOutput), .RegWrite(WbRegWrite), .Mem2Reg(WbMem2Reg), .WbOutput);
 	/*---------------------*/
 
 endmodule 
