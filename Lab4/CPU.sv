@@ -13,7 +13,7 @@ module CPU (clk, reset);
 	 
 	logic [63:0] FetchPC;
 	logic [31:0] FetchInst;
-	InstructionFetch theFetchStage (.Instruction(FetchInst), .currentPC(FetchPC), .branchAddress(MemBrPC), .brTaken(MemBrTaken), .clk, .reset);
+	InstructionFetch theFetchStage (.Instruction(FetchInst), .currentPC(FetchPC), .branchAddress(MemBrPC), .clk, .reset);
 	
 	/*------------------------------*/
 	
@@ -99,8 +99,8 @@ module CPU (clk, reset);
 
 	/*--- Execute Stage ---
 	 *
-	 * Input:  ExDa, ExDb, ExALUSrc, ExALUOp, ExPC, ExImm12Ext, ExImm9Ext, ExImmBranch
-	 *			  WbMemToRegData, MemALUResult, ForwardDa, ForwardDb
+	 * Input:  ExDa, ExDb, ExALUSrc, ExBrTaken, ExALUOp, ExPC, ExImm12Ext, ExImm9Ext, ExImmBranch
+	 *			  WbData, MemALUOut, ForwardDa, ForwardDb
 	 *
 	 * Output: ExBrPC, ExALUOut, ExOverflow, ExNegative, ExZero, ExCarryout
 	 */
@@ -108,8 +108,8 @@ module CPU (clk, reset);
 	logic [63:0] ExBrPC, ExALUOut;
 	logic        ExOverflow, ExNegative, ExZero, ExCarryout;
 	
-	Execute theExStage(.clk, .reset, .ExDa, .ExDb, .ExALUSrc, .ExALUOp, .ExPC, .ExImm12Ext, .ExImm9Ext, 
-							 .ExImmBranch, .WbMemToRegData, .MemALUResult, .ForwardDa, .ForwardDb,
+	Execute theExStage(.clk, .reset, .ExDa, .ExDb, .ExALUSrc, .ExBrTaken, .ExALUOp, .ExPC, .ExImm12Ext, .ExImm9Ext, 
+							 .ExImmBranch, .WbDataToReg, .MemALUOut, .ForwardDa, .ForwardDb,
 							 .ExBrPC, .ExALUOut, .ExOverflow, .ExNegative, .ExZero, .ExCarryout);
 	
 	/*-------------------*/

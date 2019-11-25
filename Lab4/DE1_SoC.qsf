@@ -676,13 +676,13 @@ set_global_assignment -name SYSTEMVERILOG_FILE InstructionDecode.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ControlSignal.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ForwardingUnit.sv
 set_global_assignment -name SYSTEMVERILOG_FILE DecodeRegister.sv
+set_global_assignment -name SYSTEMVERILOG_FILE Execute.sv
 set_global_assignment -name SYSTEMVERILOG_FILE Memory.sv
 set_global_assignment -name VERILOG_FILE DE1_SOC_golden_top.v
 set_global_assignment -name SYSTEMVERILOG_FILE WriteBack.sv
 set_global_assignment -name SYSTEMVERILOG_FILE registerN.sv
 set_global_assignment -name SYSTEMVERILOG_FILE MemoryRegister.sv
 set_global_assignment -name SDC_FILE DE1_SOC_golden_top.sdc
-set_global_assignment -name SYSTEMVERILOG_FILE Execute.sv
 set_global_assignment -name SYSTEMVERILOG_FILE Datapath.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ProgramCounter.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ExecRegister.sv
@@ -703,3 +703,4 @@ set_global_assignment -name SYSTEMVERILOG_FILE math.sv
 set_global_assignment -name SYSTEMVERILOG_FILE datamem.sv
 set_global_assignment -name SYSTEMVERILOG_FILE instructmem.sv
 set_global_assignment -name SYSTEMVERILOG_FILE clockDivider.sv
+set_global_assignment -name SYSTEMVERILOG_FILE nor_64.sv

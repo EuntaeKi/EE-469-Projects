@@ -11,7 +11,7 @@ module ForwardingUnit(Forward2Da, Forward2Db, ExRd, ExRm, ExRn, MemRegWrite, Mem
 		if (MemRegWrite && (MemRd == ExRn) && (MemRd != 5'd31)) begin
 			Forward2Da = 2'b01;
 		end
-		// New value for Rn from Mem output and not in 
+		// New value for Rn from Mem output and not in Exec
 		else if (WbRegWrite && (WbRd != 5'd31) && (WbRd == ExRn) && (~MemRegWrite || (MemRd != ExRn) || (MemRd == 5'd31))) begin
 			Forward2Da = 2'b10;
 		end
