@@ -7,36 +7,38 @@ module CPU (clk, reset);
 	/*** Instruction Fetch Stage ***/
 	logic [63:0] FetchPC;
 	logic [31:0] FetchInst;
-	InstructionFetch theFetchStage (.instruction(FetchInst), .currentPc(FetchPC), .branchAddress(nextPC), .brTaken(takeBranch), .clk, .reset);
+	InstructionFetch theFetchStage (.Instruction(FetchInst), .currentPC(FetchPC), .branchAddress(nextPC), .brTaken(takeBranch), .clk, .reset);
 	/*----------------------------*/
 	
 	// Fetch -> Dec Setup
 	logic [63:0] DecPC;
 	logic [31:0] DecInst;
-	InstructionRegister theInstReg (.FeatchPC, .FetchInst, .DecPC, .DecInst, .clk, .reset);
+	InstructionRegister theInstReg (.FetchPC, .FetchInst, .DecPC, .DecInst, .clk, .reset);
 	
 	/*** Decode Stage ***/
 	logic [63:0] DecDa, DecDb, DecMemAddr9Ext, DecImm12Ext;
 	logic [4:0] DecAa, DecAb, DecAw;
-	InstructionDecode theDecStage(.clk, .reset, .DecReg2Loc, .WbRegWrite, .DecReg2Write, .DecALUSrc, .DecDw, .Instruction(IDInst), .DecDa, .DecDb, .DecAb, .DecAw, .DecMemAddr9Ext, .DecImm12Ext);
+	InstructionDecode theDecStage(.clk, .reset, .DecReg2Loc, .DecRegWrite(WbRegWrite), .DecReg2Write, .DecDw(WbOutput), .Instruction(DecInst), .DecDa, .DecDb, .DecAb, .DecAw, .DecMemAddr9Ext, .DecImm12Ext);
 	/*------------------*/
 	
 	// ID -> Exec Setup
 	logic [2:0] DecALUOp;
 	logic [1:0] DecBrTaken, DecALUSrc, DecMem2Reg;
-	logic 		DecReg2Loc, UncondBr, DecReg2Write, DecRegWrite, DecBrTaken;
+	logic 		DecReg2Loc, UncondBr, DecReg2Write, DecRegWrite;
 	logic		DecFlagWrite, DecMemWrite, DecMemRead;
 	logic		ExZero, ExNegative, ExOverflow, ExCout;
 	ControlSignal theControlSignals(.Instruction(DecInst), .ALUOp(DecALUOp), .ALUSrc(DecALUSrc), .Mem2Reg(DecMem2Reg), .BrTaken(DecBrTaken),
 									.Reg2Loc(DecReg2Loc), .Reg2Write(DecReg2Write), .RegWrite(DecRegWrite), .MemWrite(DecMemWrite), .MemRead(DecMemRead), .UncondBr, 
 									.FlagWrite(DecFlagWrite), .NegativeFlag(ExNegative), .CoutFlag(ExCout), .OverflowFlag(ExOverflow), .ZeroFlag(ExZero), .ALUZero(ExZeroInst));
 	
-	ForwardingUnit	theForwadingUnit(.ForwardDa, .ForwardDb, .DecRd, .DecRm, .DecRn, .MemRegWrite, .MemRd, .WbRegWrite, .WbRd);
-														
+	/********************
+	//ForwardingUnit	theForwadingUnit(.ForwardDa, .ForwardDb, .DecRd, .DecRm, .DecRn, .MemRegWrite, .MemRd, .WbRegWrite, .WbRd);
+	*********************/
+	
 	logic [63:0] ExDa, ExDb, ExMemAddr9Ext, ExImm12Ext;
 	logic [2:0]  ExALUOp;
-	logic [1:0]  ExMem2Reg;
-	logic        ExMemWrite, ExMemRead, ExFlagWrite;
+	logic [1:0]  ExMem2Reg, ExALUSrc;
+	logic        ExMemWrite, ExMemRead, ExFlagWrite, ExRegWrite;
 	DecodeRegister theDecReg(.clk, .reset, .DecDa, .DecDb, .DecALUOp, .DecMem2Reg, .DecMemWrite, .DecMemRead, .DecFlagWrite, .DecRegWrite, .DecMemAddr9Ext, .DecImm12Ext,
 							 .ExDa, .ExDb, .ExALUOp, .ExMem2Reg, .ExMemWrite, .ExMemRead, .ExFlagWrite, .ExRegWrite, .ExMemAddr9Ext, .ExImm12Ext);
 	
@@ -45,7 +47,8 @@ module CPU (clk, reset);
 	logic [63:0] ExALUOutput;
 	logic        ExZeroInst;	// Used in ControlSignal?
 	// Need to clean up the flag signals
-	Execute theExStage(.clk, .reset, .ExDa, .ExDb, .ExALUOp, .ExFlagWrite, .ExNegative, .ExCout, .ExOverflow, .ExZero, .ExZeroInst, .ExALUOutput);
+	Execute theExStage(.clk, .reset, .ExDa, .ExDb, .ExALUOp, .ExALUSrc, .ExFlagWrite, .ExMemAddr9Ext, .ExImm12Ext, 
+						.ExNegative, .ExCout, .ExOverflow, .ExZero, .ExZeroInst, .ExALUOutput);
 	/*-------------------*/
 	
 	// Exec -> Mem Setup
@@ -69,7 +72,7 @@ module CPU (clk, reset);
 	
 	/*** WriteBack Stage ***/
 	logic [63:0] WbOutput;
-	WriteBack theWbStage(.clk, .reset, .MemOutput(WbMemOutput), .ALUOutput(WbALUOutput), .RegWrite(WbRegWrite), .Mem2Reg(WbMem2Reg), .WbOutput);
+	WriteBack theWbStage(.clk, .reset, .MemOutput(WbMemOutput), .ALUOutput(WbALUOutput), .Mem2Reg(WbMem2Reg), .WbOutput);
 	/*---------------------*/
 
 endmodule 

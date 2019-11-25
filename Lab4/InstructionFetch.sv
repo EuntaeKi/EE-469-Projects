@@ -1,8 +1,8 @@
 `timescale 1ns/10ps
 
 module InstructionFetch ( 
-	instruction, 
-	currentPc,
+	Instruction, 
+	currentPC,
 	branchAddress, 
 	brTaken,
 	clk,
@@ -13,21 +13,21 @@ module InstructionFetch (
 	input  logic 		  clk, reset, brTaken;
 	
 	// Output Logic
-	output logic [63:0] currentPc;
+	output logic [63:0] currentPC;
 	output logic [31:0] Instruction;
 	
 	// Intermediate Logic
-	logic [63:0] addedPc, nextPc;
+	logic [63:0] addedPC, nextPC;
 	
 	// Feed the address and will Fetches the Instruction into the top-level module
 	instructmem InstructionMemory (.address(currentPC), .instruction(Instruction), .clk);
 	
 	// PC + 4
-	fullAdder_64 thePCAdder (.result(addedPc), .A(currentPc), .B(64'd4), .cin(1'b0), .cout());
+	fullAdder_64 thePCAdder (.result(addedPC), .A(currentPC), .B(64'd4), .cin(1'b0), .cout());
 	
 	
 	// Pick PC or BranchedPC
-	mux2to1_64bit (.select(brTaken), .in({branchAddress, addedPc}), .out(nextPc));
+	mux2to1_64bit BrMUX (.select(brTaken), .in({branchAddress, addedPC}), .out(nextPC));
 	
 	ProgramCounter PC (.clk, .reset, .in(nextPC), .out(currentPC));
 endmodule 

@@ -3,7 +3,6 @@
 module Memory (clk, reset, address, MemWrite, MemRead, MemWriteData, MemOutput);
     // Input logic (Memory Operation Signal & Address, Data)
     input  logic        clk, reset, MemWrite, MemRead;
-    input  logic [3:0]  XferSize;
     input  logic [63:0] address, MemWriteData;
     
     // Output Logic (Data in the memory)

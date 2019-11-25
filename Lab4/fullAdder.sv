@@ -14,8 +14,9 @@ endmodule
 
 module fullAdder_64(result, A, B, cin, cout);
 	input  logic [63:0] A, B;
-	input  logic cin, cout;
+	input  logic cin;
 	
+	output logic cout;
 	output logic [63:0] result;
 	logic [63:0] carries;
 	

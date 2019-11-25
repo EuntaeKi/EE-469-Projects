@@ -5,7 +5,7 @@ module mux2to1_Nbit #(parameter N = 1) (en, a, b, out);
 	input logic en;
 	output logic [N-1:0] out;
 	logic [N-1:0] not_en_a, en_b;
-	logic noten;
+	logic not_en;
 	
 	not #0.05 n0 (not_en, en);
 	

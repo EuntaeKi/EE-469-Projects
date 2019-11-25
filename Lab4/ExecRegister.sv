@@ -7,27 +7,20 @@ module ExecRegister (clk, reset, ExDb, ExALUOutput, ExMem2Reg, ExMemWrite, ExMem
     input  logic        clk, reset;
     input  logic [63:0] ExDb, ExALUOutput;
     input  logic [1:0]  ExMem2Reg;
-    input  logic        ExMemWrite, ExMemRead;
+    input  logic        ExMemWrite, ExMemRead, ExRegWrite;
 
     // Output Logic (ExOutput)
     output logic [63:0] MemDb, MemALUOutput;
     output logic [1:0]  MemMem2Reg;
-    output logic        MemMemWrite, MemMemRead;
+    output logic        MemMemWrite, MemMemRead, MemRegWrite;
 
-    always_ff @(posedge clk) begin
-        if (reset) begin
-            MemALUOutput <= 64'b0;
-            MemDb <= 64'b0;
-            MemMem2Reg <= 0;
-            MemMemWrite <= 0;
-            MemMemRead <= 0;
-        end begin else 
-            MemALUOutput <= ExALUOutput;
-            MemDb <= ExDb;
-            MemMem2Reg <= ExMem2Reg;
-            MemMemWrite <= ExMemWrite;
-            MemMemRead <= ExMemRead;
-        end
-    end
+    // Register Instantiation
+    register64 ALUOutputReg (.reset, .clk, .write(1'b1), .in(ExALUOutput), .out(MemALUOutput));
+    register64 DbReg (.reset, .clk, .write(1'b1), .in(ExDb), .out(MemDb));
+
+    registerN #(.N(2)) Mem2RegReg (.reset, .clk, .in(ExMem2Reg), .out(MemMem2Reg));
+
+    D_FF MemWriteReg (.q(MemMemWrite), .d(ExMemWrite), .reset, .clk);
+    D_FF MemReadReg (.q(MemMemRead), .d(ExMemRead), .reset, .clk);
 
 endmodule

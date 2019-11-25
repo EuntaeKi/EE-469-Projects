@@ -1,9 +1,8 @@
 `timescale 1ns/10ps
 
-module InstructionDecode (clk, reset, DecReg2Loc, DecRegWrite, DecReg2Write, DecALUSrc, DecDw, Instruction, DecDa, DecDb, DecAa, DecAb, DecAw, DecMemAddr9Ext, DecImm12Ext);
+module InstructionDecode (clk, reset, DecReg2Loc, DecRegWrite, DecReg2Write, DecDw, Instruction, DecDa, DecDb, DecAa, DecAb, DecAw, DecMemAddr9Ext, DecImm12Ext);
     // Input Logic (clk & Control Signals)
     input  logic        clk, reset, DecReg2Loc, DecRegWrite, DecReg2Write;
-    input  logic [1:0]  DecALUSrc;
     input  logic [63:0] DecDw;
     input  logic [31:0] Instruction;
 
@@ -40,9 +39,6 @@ module InstructionDecode (clk, reset, DecReg2Loc, DecRegWrite, DecReg2Write, Dec
 	// MemAddr9Ext
 	// Sign Extended Instruction[20:12] when used
 	SignExtend #(.N(9)) ExtendImmMem (.in(Instruction[20:12]), .out(DecMemAddr9Ext));
-
-    // ALUSrc Mux
-	mux4to1_64bit MuxALUSrc (.select(DecALUSrc), .in({64'bx, DecMemAddr9Ext, DecImm12Ext, Db}), .out(DecDb));
 
     assign DecDa = Instruction[9:5];
 endmodule
