@@ -11,21 +11,18 @@ module ControlSignal ( Instruction,
 							  MemWrite,
 							  MemRead,
 							  UncondBr, 
-							  FlagWrite,
 							  NegativeFlag,
-							  CoutFlag,
 							  OverflowFlag,
-							  ZeroFlag,
-							  ALUZero );
+							  ZeroFlag );
     
     // Input Logic
 	 input logic  [31:0] Instruction;
-    input logic 			NegativeFlag, CoutFlag, OverflowFlag, ZeroFlag, ALUZero;
+    input logic 			NegativeFlag, OverflowFlag, ZeroFlag;
 
     // Output Logic
 	 output logic [2:0]  ALUOp;
 	 output logic [1:0]  BrTaken, ALUSrc, Mem2Reg;
-    output logic 		   Reg2Loc, Reg2Write, RegWrite, MemWrite, MemRead, UncondBr, FlagWrite;
+    output logic 		   Reg2Loc, Reg2Write, RegWrite, MemWrite, MemRead, UncondBr;
     
 	 enum logic [10:0] {
 		B    = 11'b000101xxxxx,
@@ -46,7 +43,6 @@ module ControlSignal ( Instruction,
 		
 			B: begin
 				ALUOp 	 = 3'bX;
-				FlagWrite = 1'b0;
 				UncondBr  = 1'b1;
 				BrTaken   = 2'b01;
 				MemWrite  = 1'b0;
@@ -60,7 +56,6 @@ module ControlSignal ( Instruction,
 			
 			BLT: begin
 				ALUOp 	 = 3'bX;
-				FlagWrite = 1'b0;
 				UncondBr  = 1'b0;
 				BrTaken   = {1'b0, (NegativeFlag ^ OverflowFlag)};
 				MemWrite  = 1'b0;
@@ -74,7 +69,6 @@ module ControlSignal ( Instruction,
 			
 			BL: begin
 				ALUOp 	 = 3'bX;
-				FlagWrite = 1'b0;
 				UncondBr  = 1'b1;
 				BrTaken   = 2'b01;
 				MemWrite  = 1'b0;
@@ -88,7 +82,6 @@ module ControlSignal ( Instruction,
 
 			BR: begin
 				ALUOp 	 = 3'bX;
-				FlagWrite = 1'b0;
 				UncondBr  = 1'bX;
 				BrTaken   = 2'b10;
 				MemWrite  = 1'b0;
@@ -102,9 +95,8 @@ module ControlSignal ( Instruction,
 			
 			CBZ: begin
 				ALUOp 	 = 3'b000;
-				FlagWrite = 1'b0;
 				UncondBr  = 1'b0;
-				BrTaken   = {1'b0, ALUZero};
+				BrTaken   = {1'b0, ZeroFlag};
 				MemWrite  = 1'b0;
 				MemRead	 = 1'bX;
 				RegWrite  = 1'b0;
