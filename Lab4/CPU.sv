@@ -39,7 +39,7 @@ module CPU (clk, reset);
 	 
 	logic [2:0] DecALUOp;
 	logic [1:0] DecBrTaken, DecALUSrc, DecMem2Reg;
-   logic 		DecReg2Loc, DecReg2Write, DecRegWrite, DecMemWrite, DecMemRead, DecUncondBr;
+   	logic 		DecReg2Loc, DecReg2Write, DecRegWrite, DecMemWrite, DecMemRead, DecUncondBr;
 	
 	ControlSignal theControlSignals (.Instruction(DecInst), .ALUOp(DecALUOp), .ALUSrc(DecALUSrc), .Mem2Reg(DecMem2Reg), .BrTaken(DecBrTaken),
 												.Reg2Loc(DecReg2Loc), .Reg2Write(DecReg2Write), .RegWrite(DecRegWrite), .MemWrite(DecMemWrite), .MemRead(DecMemRead), 
@@ -83,18 +83,16 @@ module CPU (clk, reset);
 	logic [4:0]  ExRn, ExRm, ExRd;
 	logic [2:0]  ExALUOp;
 	logic [1:0]  ExBrTaken, ExALUSrc, ExMem2Reg;
-   logic 		 ExReg2Write, ExRegWrite, ExMemWrite, ExMemRead;
+   	logic 		 ExReg2Write, ExRegWrite, ExMemWrite, ExMemRead;
 	
 	DecodeRegister theDecReg (.clk, .reset,
-	
 				 .DecPC, .DecALUOp, .DecALUSrc, .DecMem2Reg, .DecBrTaken, 
 				 .DecReg2Write, .DecRegWrite, .DecMemWrite, .DecMemRead, .DecRn, 
 				 .DecRm, .DecRd, .DecDa, .DecDb, .DecImm12Ext, .DecImm9Ext, .DecImmBranch,
 				  
 				 .ExPC, .ExALUOp, .ExALUSrc, .ExMem2Reg, .ExBrTaken, 
 				 .ExReg2Write, .ExRegWrite, .ExMemWrite, .ExMemRead, .ExRn, 
-				 .ExRm, .ExRd, .ExDa, .ExDb, .ExImm12Ext, .ExImm9Ext, .ExImmBranch
-	);
+				 .ExRm, .ExRd, .ExDa, .ExDb, .ExImm12Ext, .ExImm9Ext, .ExImmBranch);
 	/*----------------------*/
 
 	/*--- Execute Stage ---
@@ -129,7 +127,6 @@ module CPU (clk, reset);
 	logic 		 MemReg2Write, MemRegWrite, MemMemWrite, MemMemRead;
 	
 	ExecRegister theExReg (.clk, .reset, 
-	
 								  .ExMem2Reg, .ExBrTaken, .ExRegWrite, .ExMemWrite, 
 								  .ExMemRead, .ExRn, .ExRm, .ExRd, .ExDb, .ExBrPC, .ExALUOut,
 								  
@@ -162,7 +159,10 @@ module CPU (clk, reset);
 	logic [4:0]  WbRd;
 	logic [1:0]  WbMem2Reg;
 	logic 		 WbRegWrite;
-	MemoryRegister theMemReg(.clk, .reset, .MemRd, .MemALUOut, .MemMem2Reg, .MemRegWrite, .MemData, .WbRd, .WbALUOut, .WbMem2Reg, .WbRegWrite, .WbData);
+	MemoryRegister theMemReg(.clk, .reset, 
+							 .MemRd, .MemALUOut, .MemMem2Reg, .MemRegWrite, .MemData, 
+
+							 .WbRd, .WbALUOut, .WbMem2Reg, .WbRegWrite, .WbData);
 	
 	/*-------------------*/
 	
