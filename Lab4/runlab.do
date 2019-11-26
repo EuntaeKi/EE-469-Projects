@@ -6,7 +6,35 @@ vlib work
 #     their own "vlog" line below.
 
 vlog "./CPU.sv"
-
+vlog "./InstructionFetch.sv"
+vlog "./InstructionRegister.sv"
+vlog "./ControlSignal.sv"
+vlog "./ForwardingUnit.sv"
+vlog "./InstructionDecode.sv"
+vlog "./DecodeRegister.sv"
+vlog "./Execute.sv"
+vlog "./ExecRegister.sv"
+vlog "./Memory.sv"
+vlog "./MemoryRegister.sv"
+vlog "./WriteBack.sv"
+vlog "./ProgramCounter.sv"
+vlog "./SignExtend.sv"
+vlog "./regfile.sv"
+vlog "./instructmem.sv"
+vlog "./datamem.sv"
+vlog "./register64.sv"
+vlog "./register32.sv"
+vlog "./registerN.sv"
+vlog "./nor_64.sv"
+vlog "./alu.sv"
+vlog "./alu_1bit.sv"
+vlog "./muxes.sv"
+vlog "./fullAdder.sv"
+vlog "./decoder3_8.sv"
+vlog "./decoder2_4.sv"
+vlog "./decoder5_32.sv"
+vlog "./D_FF.sv"
+vlog "./math.sv"
 
 # Call vsim to invoke simulator
 #     Make sure the last item on the line is the name of the

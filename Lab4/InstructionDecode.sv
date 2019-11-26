@@ -41,6 +41,6 @@ module InstructionDecode (clk, reset, DecInst, DecReg2Loc, DecReg2Write, DecUnco
 	SignExtend #(.N(26)) ExtendBrAddr (.in(DecInst[25:0]), .out(brAddrExt));
 	SignExtend #(.N(19)) ExtendCondAddr (.in(DecInst[18:0]), .out(condAddrExt));
 	
-	mux2to1_64 theUncondMux (.select(DecUncondBr), .in({condAddrExt, brAddrExt}), .out(DecImmBranch));
+	mux2to1_64bit theUncondMux (.select(DecUncondBr), .in({condAddrExt, brAddrExt}), .out(DecImmBranch));
 endmodule
 	

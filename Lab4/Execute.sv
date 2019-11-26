@@ -27,5 +27,5 @@ module Execute (clk, reset,
 	alu TheAlu (.A(FwdDa), .B(ALUSrcOut), .cntrl(ExALUOp), .result(ExALUOut), .negative(ExNegative), .zero(), .overflow(ExOverflow), .carry_out(ExCarryout));
 	
 	// Check if Db is zero for CBZ
-	nor64 CheckDbForZero (.in(ExFwdDb), .out(ExZero));
+	nor_64 CheckDbForZero (.in(ExFwdDb), .out(ExZero));
 endmodule 

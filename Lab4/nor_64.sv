@@ -1,3 +1,5 @@
+`timescale 1ns/10ps
+
 module nor_64 (in, out);
 	input logic [63:0] in;
 	output logic out;
@@ -5,9 +7,10 @@ module nor_64 (in, out);
 	logic [15:0] signal_nor;
 	logic [3:0]  signal_and;
 	
+	genvar i;
 	generate
 		for (i = 0; i < 16; i++) begin : gen_nor_results
-			nor #0.05 norResults (signal_nor[i], result[4*i], result[4*i+1], result[4*i+2], result[4*i+3]);
+			nor #0.05 norResults (signal_nor[i], in[4*i], in[4*i+1], in[4*i+2], in[4*i+3]);
 		end
 	endgenerate
 	
