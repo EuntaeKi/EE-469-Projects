@@ -1,10 +1,10 @@
 module Execute (clk, reset, 
-					ExDa, ExDb, ExALUSrc, ExBrTaken, ExALUOp, ExPC, ExImm12Ext, ExImm9Ext, 
+					ExDa, ExDb, ExALUSrc, ExBrTaken, ExALUOp, ExImm12Ext, ExImm9Ext, 
 					WbMemDataToReg, MemALUOut, ForwardDa, ForwardDb, ExFwdDb,
 					ExALUOut, ExOverflow, ExNegative, ExZero, ExCarryout);
 					
    // Input Logic
-	input  logic [63:0] ExDa, ExDb, ExPC, ExImm12Ext, ExImm9Ext, WbMemDataToReg, MemALUOut;
+	input  logic [63:0] ExDa, ExDb, ExImm12Ext, ExImm9Ext, WbMemDataToReg, MemALUOut;
 	input  logic [2:0]  ExALUOp;
    input  logic [1:0]  ExALUSrc, ExBrTaken, ForwardDa, ForwardDb;
    input  logic        clk, reset;

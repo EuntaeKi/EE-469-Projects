@@ -29,7 +29,7 @@ module InstructionFetch (
 	logic [63:0] shiftedAddr, branchedPC, noBranchPC;
 	// If branched
 	shifter TheShifter (.value(branchAddress), .direction(1'b0), .distance(6'b000010), .result(shiftedAddr));
-	fullAdder_64 TheBranchAdder (.result(branchedPC), .A(ExPC), .B(shiftedAddr), .cin(1'b0), .cout());
+	fullAdder_64 TheBranchAdder (.result(branchedPC), .A(currentPC), .B(shiftedAddr), .cin(1'b0), .cout());
 	
 	// Pick PC or BranchedPC
 	mux4to1_64bit BrMUX (.select(brTaken), .in({64'b0, Db, branchedPC, addedPC}), .out(nextPC));

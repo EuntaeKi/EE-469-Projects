@@ -26,7 +26,7 @@ module InstructionDecode (clk, reset, DecInst, DecReg2Loc, DecReg2Write, DecUnco
      * RegWrite will signal whether or not it's ID or WB stage
      */
     regfile RegisterFile (.ReadData1(DecDa), .ReadData2(DecDb), .WriteData(WbMemDataToReg)
-                        , .ReadRegister1(DecInst[9:5]), .ReadRegister2(Ab), .WriteRegister(Aw)
+                        , .ReadRegister1(DecInst[9:5]), .ReadRegister2(DecAb), .WriteRegister(DecAw)
                         , .RegWrite(WbRegWrite), .clk);
 
     // Imm12Ext

@@ -115,20 +115,20 @@ module CPU (clk, reset);
 	
 	/*--- Exec -> Mem Register	---
 	 *
-	 * Input:  ExMem2Reg, ExBrTaken, ExRegWrite, ExMemWrite, ExMemRead,
+	 * Input:  ExPC, ExMem2Reg, ExBrTaken, ExRegWrite, ExMemWrite, ExMemRead,
 	 *			  ExAa, ExAb, ExAw, ExFwdDb, ExImmBranch, ExALUOut
-	 * Output: MemMem2Reg, MemBrTaken, MemRegWrite, MemMemWrite, MemMemRead,
+	 * Output: MemPC, MemMem2Reg, MemBrTaken, MemRegWrite, MemMemWrite, MemMemRead,
 	 *			  MemRn, MemRm, MemRd, MemDb, MemImmBranch, MemALUOut
 	 *
 	 */
-	 
+	logic [63:0] MemPC; 
 	logic 		 MemReg2Write, MemMemWrite, MemMemRead;
 	
 	ExecRegister theExReg (.clk, .reset, 
-								  .ExMem2Reg, .ExBrTaken, .ExRegWrite, .ExMemWrite, 
+								  .ExPC, .ExMem2Reg, .ExBrTaken, .ExRegWrite, .ExMemWrite, 
 								  .ExMemRead, .ExRn(ExAa), .ExRm(ExAb), .ExRd(ExAw), .ExDb(ExFwdDb), .ExImmBranch, .ExALUOut,
 								  
-								  .MemMem2Reg, .MemBrTaken, .MemRegWrite, .MemMemWrite, 
+								  .MemPC, .MemMem2Reg, .MemBrTaken, .MemRegWrite, .MemMemWrite, 
 								  .MemMemRead, .MemRn, .MemRm, .MemRd, .MemDb, .MemImmBranch, .MemALUOut
 	);
 	
@@ -148,28 +148,28 @@ module CPU (clk, reset);
 	
 	/*--- Exec -> Mem Register	---
 	 *
-	 * Input:  MemRd, MemALUOut, MemMem2Reg, MemRegWrite, MemOut
-	 * Output: WbRd, WbALUOut, WbMem2Reg, WbRegWrite, WbData
+	 * Input:  MemPC, MemRd, MemALUOut, MemMem2Reg, MemRegWrite, MemOut
+	 * Output: WbPC, WbRd, WbALUOut, WbMem2Reg, WbRegWrite, WbData
 	 *
 	 */
 	 
-	logic [63:0] WbALUOut, WbData;
+	logic [63:0] WbPC, WbALUOut, WbData;
 	logic [1:0]  WbMem2Reg;
 	MemoryRegister theMemReg(.clk, .reset, 
-							 .MemRd, .MemALUOut, .MemMem2Reg, .MemRegWrite, .MemOut, 
+							 .MemPC, .MemRd, .MemALUOut, .MemMem2Reg, .MemRegWrite, .MemOut, 
 
-							 .WbRd, .WbALUOut, .WbMem2Reg, .WbRegWrite, .WbData);
+							 .WbPC, .WbRd, .WbALUOut, .WbMem2Reg, .WbRegWrite, .WbData);
 	
 	/*-------------------*/
 	
 	/*--- Execute Stage ---
 	 *
-	 * Input:  WbALUOut, WbData, WbMem2Reg
+	 * Input:  WbPC, WbALUOut, WbData, WbMem2Reg
 	 *
 	 * Output: WbDataToReg
 	 */
 	 
-	WriteBack theWbStage(.clk, .reset, .MemOutput(WbData), .ALUOutput(WbALUOut), .Mem2Reg(WbMem2Reg), .WbDataToReg);
+	WriteBack theWbStage(.clk, .reset, .MemOutput(WbData), .ALUOutput(WbALUOut), .WbPC, .Mem2Reg(WbMem2Reg), .WbDataToReg);
 	
 	/*---------------------*/
 
