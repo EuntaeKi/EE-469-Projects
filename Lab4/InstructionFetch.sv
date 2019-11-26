@@ -26,13 +26,8 @@ module InstructionFetch (
 	// PC + 4
 	fullAdder_64 thePCAdder (.result(addedPC), .A(currentPC), .B(64'd4), .cin(1'b0), .cout());
 	
-	logic [63:0] shiftedAddr, branchedPC;
-	// If branched
-	shifter TheShifter (.value(branchAddress), .direction(1'b0), .distance(6'b000010), .result(shiftedAddr));
-	fullAdder_64 TheBranchAdder (.result(branchedPC), .A(currentPC), .B(shiftedAddr), .cin(1'b0), .cout());
-	
 	// Pick PC or BranchedPC
-	mux4to1_64bit BrMUX (.select(brTaken), .in({64'b0, Db, branchedPC, addedPC}), .out(nextPC));
+	mux4to1_64bit BrMUX (.select(brTaken), .in({64'b0, Db, branchAddress, addedPC}), .out(nextPC));
 	
 	ProgramCounter PC (.clk, .reset, .in(nextPC), .out(currentPC));
 endmodule 

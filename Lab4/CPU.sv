@@ -13,9 +13,9 @@ module CPU (clk, reset);
 	 
 	logic [63:0] FetchPC;
 	logic [31:0] FetchInst;
-	logic [63:0] MemALUOut, MemImmBranch, MemDb;
+	logic [63:0] MemALUOut, MemBranchPC, MemDb;
 	logic [1:0]  MemBrTaken, MemMem2Reg;
-	InstructionFetch theFetchStage (.Instruction(FetchInst), .currentPC(FetchPC), .branchAddress(MemImmBranch), .Db(MemALUOut), .brTaken(MemBrTaken), .clk, .reset);
+	InstructionFetch theFetchStage (.Instruction(FetchInst), .currentPC(FetchPC), .branchAddress(MemBranchPC), .Db(MemALUOut), .brTaken(MemBrTaken), .clk, .reset);
 	
 	/*------------------------------*/
 	
@@ -100,25 +100,25 @@ module CPU (clk, reset);
 
 	/*--- Execute Stage ---
 	 *
-	 * Input:  ExDa, ExDb, ExALUSrc, ExBrTaken, ExALUOp, ExImm12Ext, ExImm9Ext,
+	 * Input:  ExPC, ExDa, ExDb, ExALUSrc, ExBrTaken, ExALUOp, ExImm12Ext, ExImm9Ext, ExImmBranch
 	 *			  WbData, MemALUOut, ForwardDa, ForwardDb
 	 *
-	 * Output: ExFwdDb, ExALUOut, ExOverflow, ExNegative, ExZero, ExCarryout
+	 * Output: ExBranchPC, ExFwdDb, ExALUOut, ExOverflow, ExNegative, ExZero, ExCarryout
 	 */
 	 
-	logic [63:0] ExALUOut, ExFwdDb;
+	logic [63:0] ExBranchPC, ExALUOut, ExFwdDb;
 	
-	Execute theExStage(.clk, .reset, .ExDa, .ExDb, .ExALUSrc, .ExBrTaken, .ExALUOp, .ExImm12Ext, .ExImm9Ext, 
-							 .WbMemDataToReg(WbDataToReg), .MemALUOut, .ForwardDa, .ForwardDb, .ExFwdDb, .ExALUOut, .ExOverflow, .ExNegative, .ExZero, .ExCarryout);
+	Execute theExStage(.clk, .reset, .ExPC, .ExDa, .ExDb, .ExALUSrc, .ExBrTaken, .ExALUOp, .ExImm12Ext, .ExImm9Ext, .ExImmBranch,
+							 .WbMemDataToReg(WbDataToReg), .MemALUOut, .ForwardDa, .ForwardDb, .ExBranchPC, .ExFwdDb, .ExALUOut, .ExOverflow, .ExNegative, .ExZero, .ExCarryout);
 	
 	/*-------------------*/
 	
 	/*--- Exec -> Mem Register	---
 	 *
 	 * Input:  ExPC, ExMem2Reg, ExBrTaken, ExRegWrite, ExMemWrite, ExMemRead,
-	 *			  ExAa, ExAb, ExAw, ExFwdDb, ExImmBranch, ExALUOut
+	 *			  ExAa, ExAb, ExAw, ExFwdDb, ExBranchPC, ExALUOut
 	 * Output: MemPC, MemMem2Reg, MemBrTaken, MemRegWrite, MemMemWrite, MemMemRead,
-	 *			  MemRn, MemRm, MemRd, MemDb, MemImmBranch, MemALUOut
+	 *			  MemRn, MemRm, MemRd, MemDb, MemBranchPC, MemALUOut
 	 *
 	 */
 	logic [63:0] MemPC; 
@@ -126,10 +126,10 @@ module CPU (clk, reset);
 	
 	ExecRegister theExReg (.clk, .reset, 
 								  .ExPC, .ExMem2Reg, .ExBrTaken, .ExRegWrite, .ExMemWrite, 
-								  .ExMemRead, .ExRn(ExAa), .ExRm(ExAb), .ExRd(ExAw), .ExDb(ExFwdDb), .ExImmBranch, .ExALUOut,
+								  .ExMemRead, .ExRn(ExAa), .ExRm(ExAb), .ExRd(ExAw), .ExDb(ExFwdDb), .ExBranchPC, .ExALUOut,
 								  
 								  .MemPC, .MemMem2Reg, .MemBrTaken, .MemRegWrite, .MemMemWrite, 
-								  .MemMemRead, .MemRn, .MemRm, .MemRd, .MemDb, .MemImmBranch, .MemALUOut
+								  .MemMemRead, .MemRn, .MemRm, .MemRd, .MemDb, .MemBranchPC, .MemALUOut
 	);
 	
 	/*-------------------*/
@@ -190,7 +190,7 @@ module cpu_tb();
 	initial begin
 		reset = 1; @(posedge clk); @(posedge clk);
 		reset = 0; @(posedge clk);
-		for (i = 0; i < 500; i++) begin
+		for (i = 0; i < 100; i++) begin
 			@(posedge clk);
 		end
 		$stop;
