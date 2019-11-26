@@ -171,6 +171,19 @@ module ControlSignal ( Instruction,
 				Reg2Write = 1'b0;
 			end
 			
+			default: begin
+				ALUOp 	 = 3'b0;
+				UncondBr  = 1'bX;
+				BrTaken   = 2'b0;
+				MemWrite  = 1'b0;
+				MemRead	 = 1'bX;
+				RegWrite  = 1'b0;
+				Mem2Reg   = 2'bX;
+				ALUSrc    = 2'bX;
+				Reg2Loc   = 1'bX;
+				Reg2Write = 1'b0;
+			end
+			
 		endcase
 	end
 endmodule

@@ -52,6 +52,6 @@ view structure
 view signals
 
 # Run the simulation
-run -all
+# run -all
 
 # End

@@ -31,8 +31,9 @@ module ExecRegister (clk, reset,
     registerN #(.N(5)) RmReg (.reset, .clk, .in(ExRm), .out(MemRm));
     registerN #(.N(5)) RdReg (.reset, .clk, .in(ExRd), .out(MemRd));
     registerN #(.N(2)) Mem2RegReg (.reset, .clk, .in(ExMem2Reg), .out(MemMem2Reg));
-
-    // Control Bit
+	 registerN #(.N(2)) BrTakenReg (.reset, .clk, .in(ExBrTaken), .out(MemBrTaken));
+    
+	 // Control Bit
     D_FF MemWriteReg (.q(MemMemWrite), .d(ExMemWrite), .reset, .clk);
     D_FF MemReadReg (.q(MemMemRead), .d(ExMemRead), .reset, .clk);
     D_FF RegWriteReg (.q(MemRegWrite), .d(ExRegWrite), .reset, .clk);

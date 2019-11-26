@@ -26,7 +26,7 @@ module InstructionFetch (
 	// PC + 4
 	fullAdder_64 thePCAdder (.result(addedPC), .A(currentPC), .B(64'd4), .cin(1'b0), .cout());
 	
-	logic [63:0] shiftedAddr, branchedPC, noBranchPC;
+	logic [63:0] shiftedAddr, branchedPC;
 	// If branched
 	shifter TheShifter (.value(branchAddress), .direction(1'b0), .distance(6'b000010), .result(shiftedAddr));
 	fullAdder_64 TheBranchAdder (.result(branchedPC), .A(currentPC), .B(shiftedAddr), .cin(1'b0), .cout());
