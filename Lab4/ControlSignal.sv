@@ -108,7 +108,6 @@ module ControlSignal ( Instruction,
 			
 			ADDI: begin
 				ALUOp 	 = 3'b010;
-				FlagWrite = 1'b0;
 				UncondBr  = 1'bX;
 				BrTaken   = 2'b00;
 				MemWrite  = 1'b0;
@@ -122,7 +121,6 @@ module ControlSignal ( Instruction,
 			
 			ADDS: begin
 				ALUOp 	 = 3'b010;
-				FlagWrite = 1'b1;
 				UncondBr  = 1'bX;
 				BrTaken   = 2'b00;
 				MemWrite  = 1'b0;
@@ -136,7 +134,6 @@ module ControlSignal ( Instruction,
 			
 			SUBS: begin
 				ALUOp 	 = 3'b011;
-				FlagWrite = 1'b1;
 				UncondBr  = 1'bX;
 				BrTaken   = 2'b00;
 				MemWrite  = 1'b0;
@@ -150,7 +147,6 @@ module ControlSignal ( Instruction,
 			
 			LDUR: begin
 				ALUOp 	 = 3'b010;
-				FlagWrite = 1'b0;
 				UncondBr  = 1'bX;
 				BrTaken   = 2'b00;
 				MemWrite  = 1'b0;
@@ -164,7 +160,6 @@ module ControlSignal ( Instruction,
 			
 			STUR: begin
 				ALUOp 	 = 3'b010;
-				FlagWrite = 1'b0;
 				UncondBr  = 1'bX;
 				BrTaken   = 2'b00;
 				MemWrite  = 1'b1;
