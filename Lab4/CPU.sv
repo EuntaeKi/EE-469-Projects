@@ -13,9 +13,10 @@ module CPU (clk, reset);
 	 
 	logic [63:0] FetchPC;
 	logic [31:0] FetchInst;
-	logic [63:0] MemALUOut, MemBranchPC, MemDb;
+	logic [63:0] MemALUOut, MemBranchPC, MemDb, DecDb;
+	logic [1:0]  DecBrTaken;
 	logic [1:0]  MemBrTaken, MemMem2Reg;
-	InstructionFetch theFetchStage (.Instruction(FetchInst), .currentPC(FetchPC), .branchAddress(MemBranchPC), .Db(MemALUOut), .brTaken(MemBrTaken), .clk, .reset);
+	InstructionFetch theFetchStage (.Instruction(FetchInst), .currentPC(FetchPC), .branchAddress(DecDb), .Db(MemALUOut), .brTaken(DecBrTaken), .clk, .reset);
 	
 	/*------------------------------*/
 	
@@ -40,9 +41,10 @@ module CPU (clk, reset);
 	 */
 	 
 	logic [2:0] DecALUOp;
-	logic [1:0] DecBrTaken, DecALUSrc, DecMem2Reg;
-   logic 		DecReg2Loc, DecReg2Write, DecRegWrite, DecMemWrite, DecMemRead, DecUncondBr;
-	logic        ExOverflow, ExNegative, ExZero, ExCarryout;
+	//logic [1:0] DecBrTaken, DecALUSrc, DecMem2Reg;
+	logic [1:0] DecALUSrc, DecMem2Reg;
+   	logic 		DecReg2Loc, DecReg2Write, DecRegWrite, DecMemWrite, DecMemRead, DecUncondBr;
+	logic       ExOverflow, ExNegative, ExZero, ExCarryout;
 	
 	ControlSignal theControlSignals (.Instruction(DecInst), .ALUOp(DecALUOp), .ALUSrc(DecALUSrc), .Mem2Reg(DecMem2Reg), .BrTaken(DecBrTaken),
 												.Reg2Loc(DecReg2Loc), .Reg2Write(DecReg2Write), .RegWrite(DecRegWrite), .MemWrite(DecMemWrite), .MemRead(DecMemRead), 
@@ -56,7 +58,7 @@ module CPU (clk, reset);
 	 */
 	logic [4:0] ExAa, ExAb, ExAw, MemRn, MemRm, MemRd, WbRd;
 	logic [1:0] ForwardDa, ForwardDb;
-	logic			MemRegWrite, WbRegWrite;
+	logic		MemRegWrite, WbRegWrite;
 	ForwardingUnit theFwdUnit (.ExAa, .ExAb, .ExAw, .MemRd, .WbRd, .MemRegWrite, .WbRegWrite, .ForwardDa, .ForwardDb);
 	
 	/*----------------------*/
@@ -66,7 +68,7 @@ module CPU (clk, reset);
 	 * Input:  DecInst, DecReg2Loc, DecReg2Write, DecUncondBr, WbMemDataToReg, WbRegWrite
 	 * Output: DecAa, DecAb, DecAw, DecDa, DecDb, DecImm12Ext, DecImm9Ext, DecImmBranch
 	 */
-	logic [63:0] DecDa, DecDb, DecImm12Ext, DecImm9Ext, DecImmBranch;
+	logic [63:0] DecDa, DecImm12Ext, DecImm9Ext, DecImmBranch;
 	logic [4:0]  DecAa, DecAb, DecAw;
 	logic [63:0] WbDataToReg;
 	
@@ -86,7 +88,7 @@ module CPU (clk, reset);
 	logic [31:0] ExcInst;
 	logic [2:0]  ExALUOp;
 	logic [1:0]  ExBrTaken, ExALUSrc, ExMem2Reg;
-   logic 		 ExReg2Write, ExRegWrite, ExMemWrite, ExMemRead;
+   	logic 		 ExReg2Write, ExRegWrite, ExMemWrite, ExMemRead;
 	
 	DecodeRegister theDecReg (.clk, .reset,
 				 .DecPC, .DecALUOp, .DecALUSrc, .DecMem2Reg, .DecBrTaken, 
