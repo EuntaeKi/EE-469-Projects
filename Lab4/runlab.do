@@ -44,7 +44,7 @@ vsim -voptargs="+acc" -t 1ps -lib work cpu_tb
 # Source the wave do file
 #     This should be the file that sets up the signal window for
 #     the module you are testing.
-do ADDI_PC_wave.do
+do cpu_wave.do
 
 # Set the window types
 view wave
@@ -52,6 +52,6 @@ view structure
 view signals
 
 # Run the simulation
-# run -all
+run -all
 
 # End

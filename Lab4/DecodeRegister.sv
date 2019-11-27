@@ -1,27 +1,27 @@
 `timescale 1ns/10ps
 
 module DecodeRegister (clk, reset, 
-                        DecPC, DecALUOp, DecALUSrc, DecMem2Reg, DecBrTaken, 
+                        DecPC, DecALUOp, DecALUSrc, DecMem2Reg, 
                         DecReg2Write, DecRegWrite, DecMemWrite, DecMemRead,
-                        DecAa, DecAb, DecAw, DecDa, DecDb, DecImm12Ext, DecImm9Ext, DecImmBranch,
+                        DecAa, DecAb, DecAw, DecDa, DecDb, DecImm12Ext, DecImm9Ext,
 
-                        ExPC, ExALUOp, ExALUSrc, ExMem2Reg, ExBrTaken, 
+                        ExPC, ExALUOp, ExALUSrc, ExMem2Reg, 
                         ExReg2Write, ExRegWrite, ExMemWrite, ExMemRead, 
-                        ExAa, ExAb, ExAw, ExDa, ExDb, ExImm12Ext, ExImm9Ext, ExImmBranch);
+                        ExAa, ExAb, ExAw, ExDa, ExDb, ExImm12Ext, ExImm9Ext);
 
     // Input Logic
     input  logic        clk, reset;
-    input  logic [63:0] DecPC, DecDa, DecDb, DecImm9Ext, DecImm12Ext, DecImmBranch;
+    input  logic [63:0] DecPC, DecDa, DecDb, DecImm9Ext, DecImm12Ext;
     input  logic [4:0]  DecAa, DecAb, DecAw;
     input  logic [2:0]  DecALUOp;
-    input  logic [1:0]  DecMem2Reg, DecALUSrc, DecBrTaken;
+    input  logic [1:0]  DecMem2Reg, DecALUSrc;
     input  logic        DecMemWrite, DecMemRead, DecRegWrite, DecReg2Write;
     
     // Output Logic
-    output logic [63:0] ExPC, ExDa, ExDb, ExImm9Ext, ExImm12Ext, ExImmBranch;
+    output logic [63:0] ExPC, ExDa, ExDb, ExImm9Ext, ExImm12Ext;
     output logic [4:0]  ExAa, ExAb, ExAw;
     output logic [2:0]  ExALUOp;
-    output logic [1:0]  ExMem2Reg, ExALUSrc, ExBrTaken;
+    output logic [1:0]  ExMem2Reg, ExALUSrc;
     output logic        ExMemWrite, ExMemRead, ExRegWrite, ExReg2Write;
 
     // Register Instantiation
@@ -30,7 +30,6 @@ module DecodeRegister (clk, reset,
     register64 DbReg (.reset, .clk, .write(1'b1), .in(DecDb), .out(ExDb));
     register64 Imm9Reg (.reset, .clk, .write(1'b1), .in(DecImm9Ext), .out(ExImm9Ext));
     register64 Imm12Reg (.reset, .clk, .write(1'b1), .in(DecImm12Ext), .out(ExImm12Ext));
-    register64 ImmBranchReg (.reset, .clk, .write(1'b1), .in(DecImmBranch), .out(ExImmBranch));
 
     // Register Address Registers
     registerN #(.N(5)) RnReg (.reset, .clk, .in(DecAa), .out(ExAa));
@@ -41,8 +40,7 @@ module DecodeRegister (clk, reset,
     registerN #(.N(3)) ALUOpReg (.reset, .clk, .in(DecALUOp), .out(ExALUOp));
     registerN #(.N(2)) ALUSrcReg (.reset, .clk, .in(DecALUSrc), .out(ExALUSrc));
     registerN #(.N(2)) Mem2RegReg (.reset, .clk, .in(DecMem2Reg), .out(ExMem2Reg));
-    registerN #(.N(2)) BrTakenReg (.reset, .clk, .in(DecBrTaken), .out(ExBrTaken));
-
+	 
     // Control Logic Registers (1-bit)
     D_FF MemWriteReg (.q(ExMemWrite), .d(DecMemWrite), .reset, .clk);
     D_FF MemReadReg (.q(ExMemRead), .d(DecMemRead), .reset, .clk);
