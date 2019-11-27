@@ -29,7 +29,7 @@ module InstructionDecode (clk, reset, DecPC, DecInst, DecReg2Loc, DecReg2Write, 
      */
     regfile RegisterFile (.ReadData1(DecDa), .ReadData2(DecDb), .WriteData(WbMemDataToReg)
                         , .ReadRegister1(DecAa), .ReadRegister2(DecAb), .WriteRegister(WbRd)
-                        , .RegWrite(WbRegWrite), .clk);
+                        , .RegWrite(WbRegWrite), .clk(~clk));
 
     // Imm12Ext
 	// Zero Extended DecInst[21:10] when used

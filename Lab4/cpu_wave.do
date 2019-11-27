@@ -4,10 +4,17 @@ add wave -noupdate /cpu_tb/dut/theFetchStage/clk
 add wave -noupdate /cpu_tb/dut/theFetchStage/reset
 add wave -noupdate -radix decimal /cpu_tb/dut/theFetchStage/currentPC
 add wave -noupdate /cpu_tb/dut/theFetchStage/Instruction
-add wave -noupdate -radix decimal /cpu_tb/dut/theDecStage/RegisterFile/registerData
-add wave -noupdate -radix decimal /cpu_tb/dut/theDecStage/DecAa
-add wave -noupdate -radix decimal /cpu_tb/dut/theDecStage/DecAb
-add wave -noupdate -radix decimal /cpu_tb/dut/theDecStage/DecAw
+add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[0]}
+add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[1]}
+add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[2]}
+add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[3]}
+add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[4]}
+add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[5]}
+add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[6]}
+add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[7]}
+add wave -noupdate -radix unsigned /cpu_tb/dut/theDecStage/DecAa
+add wave -noupdate -radix unsigned /cpu_tb/dut/theDecStage/DecAb
+add wave -noupdate -radix unsigned /cpu_tb/dut/theDecStage/DecAw
 add wave -noupdate -radix decimal /cpu_tb/dut/theDecStage/WbMemDataToReg
 add wave -noupdate /cpu_tb/dut/theFwdUnit/ForwardDa
 add wave -noupdate /cpu_tb/dut/theFwdUnit/ForwardDb
@@ -31,4 +38,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {160 us}
+WaveRestoreZoom {0 ps} {150 us}
