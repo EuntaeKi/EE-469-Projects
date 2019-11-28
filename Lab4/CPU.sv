@@ -42,12 +42,14 @@ module CPU (clk, reset);
 	 
 	logic [2:0] DecALUOp;
 	logic [1:0] DecALUSrc, DecMem2Reg;
-   logic 		DecReg2Loc, DecReg2Write, DecRegWrite, DecMemWrite, DecMemRead, DecUncondBr;
+   	logic 		DecReg2Loc, DecReg2Write, DecRegWrite, DecMemWrite, DecMemRead, DecUncondBr, DecFlagWrite;
 	logic       ExOverflow, ExNegative, ExZero, ExCarryout;
-	
+	logic		InstZero, BLTBrTaken;
+
 	ControlSignal theControlSignals (.Instruction(DecInst), .ALUOp(DecALUOp), .ALUSrc(DecALUSrc), .Mem2Reg(DecMem2Reg), .BrTaken(DecBrTaken),
 												.Reg2Loc(DecReg2Loc), .Reg2Write(DecReg2Write), .RegWrite(DecRegWrite), .MemWrite(DecMemWrite), .MemRead(DecMemRead), 
-												.UncondBr(DecUncondBr), .NegativeFlag(ExNegative), .OverflowFlag(ExOverflow), .ZeroFlag(ExZero));
+												.UncondBr(DecUncondBr), .NegativeFlag(ExNegative), .OverflowFlag(ExOverflow), .ZeroFlag(InstZero), .FlagWrite(DecFlagWrite),
+												.BLTBrTaken);
 	/*----------------------*/
 	
 	/*--- Forwarding Unit ---
@@ -73,6 +75,10 @@ module CPU (clk, reset);
 	
 	InstructionDecode theDecStage (.clk, .reset, .DecPC, .DecInst, .DecReg2Loc, .DecReg2Write, .DecUncondBr, .WbMemDataToReg(WbDataToReg), .WbRegWrite, .WbRd,
 											 .DecAa, .DecAb, .DecAw, .DecDa, .DecDb, .DecImm12Ext, .DecImm9Ext, .DecBranchPC);
+	
+	// Check if Db is zero for CBZ
+	nor_64 CheckDbForZero (.in(DecDb), .out(InstZero));
+
 	/*-------------------*/
 	
 	/*--- Dec -> Exec Register	---
@@ -87,15 +93,15 @@ module CPU (clk, reset);
 	logic [31:0] ExcInst;
 	logic [2:0]  ExALUOp;
 	logic [1:0]  ExALUSrc, ExMem2Reg;
-   	logic 		 ExReg2Write, ExRegWrite, ExMemWrite, ExMemRead;
+   	logic 		 ExReg2Write, ExRegWrite, ExMemWrite, ExMemRead, ExFlagWrite;
 	
 	DecodeRegister theDecReg (.clk, .reset,
 				 .DecPC, .DecALUOp, .DecALUSrc, .DecMem2Reg, 
-				 .DecReg2Write, .DecRegWrite, .DecMemWrite, .DecMemRead, 
+				 .DecReg2Write, .DecRegWrite, .DecMemWrite, .DecMemRead, .DecFlagWrite,
 				 .DecAa, .DecAb, .DecAw, .DecDa, .DecDb, .DecImm12Ext, .DecImm9Ext,
 				  
 				 .ExPC, .ExALUOp, .ExALUSrc, .ExMem2Reg, 
-				 .ExReg2Write, .ExRegWrite, .ExMemWrite, .ExMemRead, 
+				 .ExReg2Write, .ExRegWrite, .ExMemWrite, .ExMemRead, .ExFlagWrite,
 				 .ExAa, .ExAb, .ExAw, .ExDa, .ExDb, .ExImm12Ext, .ExImm9Ext);
 	/*----------------------*/
 
@@ -109,8 +115,9 @@ module CPU (clk, reset);
 	 
 	logic [63:0] ExALUOut, ExFwdDb;
 	
-	Execute theExStage(.clk, .reset, .ExPC, .ExDa, .ExDb, .ExALUSrc, .ExALUOp, .ExImm12Ext, .ExImm9Ext,
-							 .WbMemDataToReg(WbDataToReg), .MemALUOut, .ForwardDa, .ForwardDb, .ExFwdDb, .ExALUOut, .ExOverflow, .ExNegative, .ExZero, .ExCarryout);
+	Execute theExStage(.clk, .reset, .ExPC, .ExDa, .ExDb, .ExALUSrc, .ExALUOp, .ExFlagWrite, .ExImm12Ext, .ExImm9Ext,
+							 .WbMemDataToReg(WbDataToReg), .MemALUOut, .ForwardDa, .ForwardDb, .ExFwdDb, .ExALUOut,
+							.ExOverflow, .ExNegative, .ExZero, .ExCarryout, .BLTBrTaken);
 	
 	/*-------------------*/
 	

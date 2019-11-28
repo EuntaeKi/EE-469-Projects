@@ -33,4 +33,5 @@ module ForwardingUnit(ExAa, ExAb, ExAw, MemRd, WbRd, MemRegWrite, WbRegWrite, Fo
 			ForwardDb = 2'b00;
 		end
 	end
+
 endmodule 

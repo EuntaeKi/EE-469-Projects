@@ -18,6 +18,5 @@ module FlagReg (clk, reset, enable, in, out);
 			mux2to1 TheMux (.select(enable), .in({in[i], out[i]}), .out(storeFlag[i]));
 			D_FF theDFF (.q(out[i]), .d(storeFlag[i]), .clk(clk), .reset(reset));
 		end
-		
 	endgenerate
 endmodule 

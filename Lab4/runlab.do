@@ -35,6 +35,7 @@ vlog "./decoder2_4.sv"
 vlog "./decoder5_32.sv"
 vlog "./D_FF.sv"
 vlog "./math.sv"
+vlog "./FlagReg.sv"
 
 # Call vsim to invoke simulator
 #     Make sure the last item on the line is the name of the

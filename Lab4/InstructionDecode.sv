@@ -41,13 +41,15 @@ module InstructionDecode (clk, reset, DecPC, DecInst, DecReg2Loc, DecReg2Write, 
 
 	logic [63:0] brAddrExt, condAddrExt, DecImmBranch;
 	SignExtend #(.N(26)) ExtendBrAddr (.in(DecInst[25:0]), .out(brAddrExt));
-	SignExtend #(.N(19)) ExtendCondAddr (.in(DecInst[18:0]), .out(condAddrExt));
+	SignExtend #(.N(19)) ExtendCondAddr (.in(DecInst[23:5]), .out(condAddrExt));
 	
-	mux2to1_64bit theUncondMux (.select(DecUncondBr), .in({condAddrExt, brAddrExt}), .out(DecImmBranch));
+	mux2to1_64bit theUncondMux (.select(DecUncondBr), .in({brAddrExt, condAddrExt}), .out(DecImmBranch));
 	
 	logic [63:0] shiftedAddr;
 	// If branched
 	shifter TheShifter (.value(DecImmBranch), .direction(1'b0), .distance(6'b000010), .result(shiftedAddr));
+
 	fullAdder_64 TheBranchAdder (.result(DecBranchPC), .A(DecPC), .B(shiftedAddr), .cin(1'b0), .cout());
+
 endmodule
 	
