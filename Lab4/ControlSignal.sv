@@ -93,7 +93,7 @@ module ControlSignal ( Instruction,
 				MemRead	 = 1'bX;
 				RegWrite  = 1'b0;
 				Mem2Reg   = 2'bX;
-				ALUSrc    = 2'bX;
+				ALUSrc    = 2'b0;
 				Reg2Loc   = 1'b0;
 				Reg2Write = 1'bX;
 				FlagWrite = 1'b0;

@@ -13,14 +13,7 @@ add wave -noupdate -group Default /cpu_tb/dut/theFwdUnit/ForwardDb
 add wave -noupdate -group Default -radix decimal /cpu_tb/dut/theDecStage/DecDa
 add wave -noupdate -group Default -radix decimal /cpu_tb/dut/theDecStage/DecDb
 add wave -noupdate -group Default -radix decimal /cpu_tb/dut/theDecStage/DecImm12Ext
-add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[0]}
-add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[1]}
-add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[2]}
-add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[3]}
-add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[4]}
-add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[5]}
-add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[6]}
-add wave -noupdate -group Reg -radix decimal {/cpu_tb/dut/theDecStage/RegisterFile/registerData[7]}
+add wave -noupdate -group Reg -radix decimal /cpu_tb/dut/theDecStage/RegisterFile/registerData
 add wave -noupdate -group Fetch -radix decimal /cpu_tb/dut/theFetchStage/branchAddress
 add wave -noupdate -group Fetch -radix decimal /cpu_tb/dut/theFetchStage/Db
 add wave -noupdate -group Fetch -radix decimal /cpu_tb/dut/theFetchStage/brTaken

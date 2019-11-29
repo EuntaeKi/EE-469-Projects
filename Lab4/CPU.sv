@@ -13,10 +13,10 @@ module CPU (clk, reset);
 	 
 	logic [63:0] FetchPC;
 	logic [31:0] FetchInst;
-	logic [63:0] MemALUOut, MemBranchPC, MemDb, DecDb, DecBranchPC;
+	logic [63:0] ExALUOut, MemALUOut, MemBranchPC, MemDb, DecDb, DecBranchPC;
 	logic [1:0]  DecBrTaken;
 	logic [1:0]  MemBrTaken, MemMem2Reg;
-	InstructionFetch theFetchStage (.Instruction(FetchInst), .currentPC(FetchPC), .branchAddress(DecBranchPC), .Db(MemALUOut), .brTaken(DecBrTaken), .clk, .reset);
+	InstructionFetch theFetchStage (.Instruction(FetchInst), .currentPC(FetchPC), .branchAddress(DecBranchPC), .Db(ExALUOut), .brTaken(DecBrTaken), .clk, .reset);
 	
 	/*------------------------------*/
 	
@@ -68,6 +68,8 @@ module CPU (clk, reset);
 	 *
 	 * Input:  DecPC, DecInst, DecReg2Loc, DecReg2Write, DecUncondBr, WbMemDataToReg, WbRegWrite
 	 * Output: DecAa, DecAb, DecAw, DecDa, DecDb, DecImm12Ext, DecImm9Ext, DecBranchPC
+	 *
+	 * TODO: Put forwarding unit in theis stage - will output to correct data for Da and Db (WbMemDataToReg, MemALUOut, or DecDa)
 	 */
 	logic [63:0] DecDa, DecImm12Ext, DecImm9Ext;
 	logic [4:0]  DecAa, DecAb, DecAw;
@@ -96,7 +98,7 @@ module CPU (clk, reset);
    	logic 		 ExReg2Write, ExRegWrite, ExMemWrite, ExMemRead, ExFlagWrite;
 	
 	DecodeRegister theDecReg (.clk, .reset,
-				 .DecPC, .DecALUOp, .DecALUSrc, .DecMem2Reg, 
+				 .DecPC(FetchPC), .DecALUOp, .DecALUSrc, .DecMem2Reg, 
 				 .DecReg2Write, .DecRegWrite, .DecMemWrite, .DecMemRead, .DecFlagWrite,
 				 .DecAa, .DecAb, .DecAw, .DecDa, .DecDb, .DecImm12Ext, .DecImm9Ext,
 				  
@@ -113,7 +115,7 @@ module CPU (clk, reset);
 	 * Output: ExBranchPC, ExFwdDb, ExALUOut, ExOverflow, ExNegative, ExZero, ExCarryout
 	 */
 	 
-	logic [63:0] ExALUOut, ExFwdDb;
+	logic [63:0] ExFwdDb;
 	
 	Execute theExStage(.clk, .reset, .ExPC, .ExDa, .ExDb, .ExALUSrc, .ExALUOp, .ExFlagWrite, .ExImm12Ext, .ExImm9Ext,
 							 .WbMemDataToReg(WbDataToReg), .MemALUOut, .ForwardDa, .ForwardDb, .ExFwdDb, .ExALUOut,
