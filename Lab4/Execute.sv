@@ -18,18 +18,13 @@ module Execute (clk, reset,
 	// Intermediate Logic
 	logic 		 Overflow, Negative, Zero, Carryout;
 	logic		 NotExFlagWrite, XorExNegOver, XorNegOver, AndFlagWriteXor, AndNotFlagWriteXor;
-
-	// Forwarding
-	logic [63:0] FwdDa;
-	mux4to1_64bit ForwardingDaMux (.select(ForwardDa), .in({64'bx, WbMemDataToReg, MemALUOut, ExDa}), .out(FwdDa));
-	mux4to1_64bit ForwardingDbMux (.select(ForwardDb), .in({64'bx, WbMemDataToReg, MemALUOut, ExDb}), .out(ExFwdDb));
 	
 	// ALUSrc
 	logic [63:0] ALUSrcOut;
-	mux4to1_64bit ALUSrcMux (.select(ExALUSrc), .in({64'bx, ExImm9Ext, ExImm12Ext, ExFwdDb}), .out(ALUSrcOut));
+	mux4to1_64bit ALUSrcMux (.select(ExALUSrc), .in({64'bx, ExImm9Ext, ExImm12Ext, ExDb}), .out(ALUSrcOut));
 	
 	// The ALU
-	alu TheAlu (.A(FwdDa), .B(ALUSrcOut), .cntrl(ExALUOp), .result(ExALUOut), .negative(Negative), .zero(Zero), .overflow(Overflow), .carry_out(Carryout));
+	alu TheAlu (.A(ExDa), .B(ALUSrcOut), .cntrl(ExALUOp), .result(ExALUOut), .negative(Negative), .zero(Zero), .overflow(Overflow), .carry_out(Carryout));
 	
 	// Flag Register
 	FlagReg TheFlagRegister (.clk, .reset, .enable(ExFlagWrite), .in({Negative, Carryout, Overflow, Zero}), .out({ExNegative, ExCarryout, ExOverflow, ExZero}));

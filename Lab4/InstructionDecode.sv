@@ -1,12 +1,13 @@
 `timescale 1ns/10ps
 
-module InstructionDecode (clk, reset, DecPC, DecInst, DecReg2Loc, DecReg2Write, DecUncondBr, WbMemDataToReg, WbRegWrite, WbRd, DecAa, DecAb, DecAw, DecDa, DecDb, DecImm12Ext, DecImm9Ext, DecBranchPC);
+module InstructionDecode (clk, reset, DecPC, DecInst, DecReg2Loc, DecReg2Write, DecUncondBr, DecBrSrc, WbDataToReg, WbRegWrite, WbRd, DecAa, DecAb, DecAw, DecDa, DecDb, DecImm12Ext, DecImm9Ext, DecBranchPC, ForwardA, ForwardB, ExALUOut, WbMuxOut);
 
     // Input Logic (clk & Control Signals)
-    input  logic        clk, reset, DecReg2Loc, DecUncondBr, WbRegWrite, DecReg2Write;
-    input  logic [63:0] DecPC, WbMemDataToReg;
+    input  logic        clk, reset, DecReg2Loc, DecUncondBr, DecBrSrc, WbRegWrite, DecReg2Write;
+    input  logic [63:0] DecPC, WbDataToReg, ExALUOut, WbMuxOut;
     input  logic [31:0] DecInst;
 	 input  logic [4:0] WbRd;
+	 input logic [1:0] ForwardA, ForwardB;
 
     // Output Logic (Register Data , Register Address, Signed-extended constants)
     output logic [63:0] DecDa, DecDb;
@@ -27,10 +28,14 @@ module InstructionDecode (clk, reset, DecPC, DecInst, DecReg2Loc, DecReg2Write, 
      * Regfile will be updated at WB stage
      * RegWrite will signal whether or not it's ID or WB stage
      */
-    regfile RegisterFile (.ReadData1(DecDa), .ReadData2(DecDb), .WriteData(WbMemDataToReg)
+	 logic [63:0] RegDa, RegDb;
+    regfile RegisterFile (.ReadData1(RegDa), .ReadData2(RegDb), .WriteData(WbMemDataToReg)
                         , .ReadRegister1(DecAa), .ReadRegister2(DecAb), .WriteRegister(WbRd)
                         , .RegWrite(WbRegWrite), .clk(~clk));
-
+								
+	mux4to1_64bit theFowardAMux (.select(FowardA), .in({64'bx, WbMuxOut, ExALUOut, RegDa}), .out(DecDa));
+	mux4to1_64bit theFowardBMux (.select(FowardB), .in({64'bx, WbMuxOut, ExALUOut, RegDb}), .out(DecDb));
+	 
     // Imm12Ext
 	// Zero Extended DecInst[21:10] when used
 	SignExtend #(.N(13)) ExtendImm12 (.in({1'b0, DecInst[21:10]}), .out(DecImm12Ext));
@@ -45,11 +50,12 @@ module InstructionDecode (clk, reset, DecPC, DecInst, DecReg2Loc, DecReg2Write, 
 	
 	mux2to1_64bit theUncondMux (.select(DecUncondBr), .in({brAddrExt, condAddrExt}), .out(DecImmBranch));
 	
-	logic [63:0] shiftedAddr;
+	logic [63:0] shiftedAddr, adderResult;
 	// If branched
 	shifter TheShifter (.value(DecImmBranch), .direction(1'b0), .distance(6'b000010), .result(shiftedAddr));
-
-	fullAdder_64 TheBranchAdder (.result(DecBranchPC), .A(DecPC), .B(shiftedAddr), .cin(1'b0), .cout());
+	fullAdder_64 TheBranchAdder (.result(adderResult), .A(DecPC), .B(shiftedAddr), .cin(1'b0), .cout());
+	
+	mux2to1_64bit theBrMux (.select(BrSrc), .in({DecDb, DecImmBranch}), .out(DecBranchPC));
 
 endmodule
 	

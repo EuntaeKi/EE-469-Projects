@@ -11,12 +11,10 @@ module CPU (clk, reset);
 	 *
 	 */
 	 
-	logic [63:0] FetchPC;
+	logic [63:0] FetchPC, DecBranchPC;
 	logic [31:0] FetchInst;
-	logic [63:0] ExALUOut, MemALUOut, MemBranchPC, MemDb, DecDb, DecBranchPC;
-	logic [1:0]  DecBrTaken;
-	logic [1:0]  MemBrTaken, MemMem2Reg;
-	InstructionFetch theFetchStage (.Instruction(FetchInst), .currentPC(FetchPC), .branchAddress(DecBranchPC), .Db(ExALUOut), .brTaken(DecBrTaken), .clk, .reset);
+	logic DecBrTaken;
+	InstructionFetch theFetchStage (.Instruction(FetchInst), .currentPC(FetchPC), .branchAddress(DecBranchPC), .brTaken(DecBrTaken), .clk, .reset);
 	
 	/*------------------------------*/
 	
@@ -42,11 +40,11 @@ module CPU (clk, reset);
 	 
 	logic [2:0] DecALUOp;
 	logic [1:0] DecALUSrc, DecMem2Reg;
-   	logic 		DecReg2Loc, DecReg2Write, DecRegWrite, DecMemWrite, DecMemRead, DecUncondBr, DecFlagWrite;
+   logic 		DecReg2Loc, DecReg2Write, DecRegWrite, DecMemWrite, DecMemRead, DecUncondBr, DecFlagWrite;
 	logic       ExOverflow, ExNegative, ExZero, ExCarryout;
-	logic		InstZero, BLTBrTaken;
+	logic		InstZero, BLTBrTaken, DecBrSrc;
 
-	ControlSignal theControlSignals (.Instruction(DecInst), .ALUOp(DecALUOp), .ALUSrc(DecALUSrc), .Mem2Reg(DecMem2Reg), .BrTaken(DecBrTaken),
+	ControlSignal theControlSignals (.Instruction(DecInst), .ALUOp(DecALUOp), .ALUSrc(DecALUSrc), .Mem2Reg(DecMem2Reg), .BrTaken(DecBrTaken), .BrSrc(DecBrSrc), 
 												.Reg2Loc(DecReg2Loc), .Reg2Write(DecReg2Write), .RegWrite(DecRegWrite), .MemWrite(DecMemWrite), .MemRead(DecMemRead), 
 												.UncondBr(DecUncondBr), .NegativeFlag(ExNegative), .OverflowFlag(ExOverflow), .ZeroFlag(InstZero), .FlagWrite(DecFlagWrite),
 												.BLTBrTaken);
@@ -55,12 +53,12 @@ module CPU (clk, reset);
 	/*--- Forwarding Unit ---
 	 *
 	 * Input: ExAa, ExAb, ExAw, MemRegWrite, MemRd, WbRegWrite, WbRd
-	 * Output: ForwardDa, ForwardDb
+	 * Output: ForwardA, ForwardB
 	 */
-	logic [4:0] ExAa, ExAb, ExAw, MemRn, MemRm, MemRd, WbRd;
-	logic [1:0] ForwardDa, ForwardDb;
-	logic		MemRegWrite, WbRegWrite;
-	ForwardingUnit theFwdUnit (.ExAa, .ExAb, .ExAw, .MemRd, .WbRd, .MemRegWrite, .WbRegWrite, .ForwardDa, .ForwardDb);
+	logic [4:0] DecAa, DecAb, DecAw, ExRn, ExRm, ExRd, MemRd;
+	logic [1:0] ForwardA, ForwardB;
+	logic		ExRegWrite, MemRegWrite, WbRegWrite;
+	ForwardingUnit theFwdUnit (.DecAa, .DecAb, .DecAw, .ExRd, .MemRd, .ExRegWrite, .MemRegWrite, .ForwardA, .ForwardB);
 	
 	/*----------------------*/
 	
@@ -73,10 +71,10 @@ module CPU (clk, reset);
 	 */
 	logic [63:0] DecDa, DecImm12Ext, DecImm9Ext;
 	logic [4:0]  DecAa, DecAb, DecAw;
-	logic [63:0] WbDataToReg;
+	logic [63:0] WbDataToReg, WbMuxOut, ExALUOut;
 	
-	InstructionDecode theDecStage (.clk, .reset, .DecPC, .DecInst, .DecReg2Loc, .DecReg2Write, .DecUncondBr, .WbMemDataToReg(WbDataToReg), .WbRegWrite, .WbRd,
-											 .DecAa, .DecAb, .DecAw, .DecDa, .DecDb, .DecImm12Ext, .DecImm9Ext, .DecBranchPC);
+	InstructionDecode theDecStage (.clk, .reset, .DecPC, .DecInst, .DecReg2Loc, .DecReg2Write, .DecUncondBr, .WbDataToReg, .WbRegWrite, .WbRd,
+											 .DecAa, .DecAb, .DecAw, .DecDa, .DecDb, .DecImm12Ext, .DecImm9Ext, .DecBranchPC, .ForwardA, .ForwardB, .ExALUOut, .WbMuxOut);
 	
 	// Check if Db is zero for CBZ
 	nor_64 CheckDbForZero (.in(DecDb), .out(InstZero));
@@ -95,7 +93,7 @@ module CPU (clk, reset);
 	logic [31:0] ExcInst;
 	logic [2:0]  ExALUOp;
 	logic [1:0]  ExALUSrc, ExMem2Reg;
-   	logic 		 ExReg2Write, ExRegWrite, ExMemWrite, ExMemRead, ExFlagWrite;
+   	logic 		 ExReg2Write, ExMemWrite, ExMemRead, ExFlagWrite;
 	
 	DecodeRegister theDecReg (.clk, .reset,
 				 .DecPC(FetchPC), .DecALUOp, .DecALUSrc, .DecMem2Reg, 
@@ -168,20 +166,9 @@ module CPU (clk, reset);
 	MemoryRegister theMemReg(.clk, .reset, 
 							 .MemPC, .MemRd, .MemALUOut, .MemMem2Reg, .MemRegWrite, .MemOut, 
 
-							 .WbPC, .WbRd, .WbALUOut, .WbMem2Reg, .WbRegWrite, .WbData);
+							 .WbRd, .WbDataToReg, .WbRegWrite);
 	
 	/*-------------------*/
-	
-	/*--- Execute Stage ---
-	 *
-	 * Input:  WbPC, WbALUOut, WbData, WbMem2Reg
-	 *
-	 * Output: WbDataToReg
-	 */
-	 
-	WriteBack theWbStage(.clk, .reset, .MemOutput(WbData), .ALUOutput(WbALUOut), .WbPC, .Mem2Reg(WbMem2Reg), .WbDataToReg);
-	
-	/*---------------------*/
 
 endmodule 
 
