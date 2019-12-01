@@ -679,7 +679,6 @@ set_global_assignment -name SYSTEMVERILOG_FILE Execute.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ExecRegister.sv
 set_global_assignment -name SYSTEMVERILOG_FILE Memory.sv
 set_global_assignment -name SYSTEMVERILOG_FILE MemoryRegister.sv
-set_global_assignment -name SYSTEMVERILOG_FILE WriteBack.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ProgramCounter.sv
 set_global_assignment -name SYSTEMVERILOG_FILE SignExtend.sv
 set_global_assignment -name SYSTEMVERILOG_FILE regfile.sv

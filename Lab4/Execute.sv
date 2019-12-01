@@ -1,18 +1,17 @@
 `timescale 1ns/10ps
 
 module Execute (clk, reset, 
-					ExPC, ExDa, ExDb, ExALUSrc, ExALUOp, ExFlagWrite, ExImm12Ext, ExImm9Ext,
-					WbMemDataToReg, MemALUOut, ForwardDa, ForwardDb, ExFwdDb,
+					ExDa, ExDb, ExALUSrc, ExALUOp, ExFlagWrite, ExImm12Ext, ExImm9Ext,
 					ExALUOut, ExOverflow, ExNegative, ExZero, ExCarryout, BLTBrTaken);
 					
    // Input Logic
-	input  logic [63:0] ExPC, ExDa, ExDb, ExImm12Ext, ExImm9Ext, WbMemDataToReg, MemALUOut;
+	input  logic [63:0] ExDa, ExDb, ExImm12Ext, ExImm9Ext;
 	input  logic [2:0]  ExALUOp;
-   	input  logic [1:0]  ExALUSrc, ForwardDa, ForwardDb;
+   	input  logic [1:0]  ExALUSrc;
    	input  logic        ExFlagWrite, clk, reset;
 
    // Output Logic 
-	output logic [63:0] ExALUOut, ExFwdDb;
+	output logic [63:0] ExALUOut;
 	output logic 		ExOverflow, ExNegative, ExZero, ExCarryout, BLTBrTaken;
 
 	// Intermediate Logic
