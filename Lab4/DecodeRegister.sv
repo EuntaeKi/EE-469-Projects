@@ -2,11 +2,11 @@
 
 module DecodeRegister (clk, reset, 
                         DecIncrementedPC, DecALUOp, DecALUSrc, DecMem2Reg, 
-                        DecReg2Write, DecRegWrite, DecMemWrite, DecMemRead, DecFlagWrite,
+                        DecRegWrite, DecMemWrite, DecMemRead, DecFlagWrite,
                         DecAw, DecDa, DecDb, DecImm12Ext, DecImm9Ext,
 
                         ExIncrementedPC, ExALUOp, ExALUSrc, ExMem2Reg, 
-                        ExReg2Write, ExRegWrite, ExMemWrite, ExMemRead, ExFlagWrite,
+                        ExRegWrite, ExMemWrite, ExMemRead, ExFlagWrite,
                         ExAw, ExDa, ExDb, ExImm12Ext, ExImm9Ext);
 
     // Input Logic
@@ -15,14 +15,14 @@ module DecodeRegister (clk, reset,
     input  logic [4:0]  DecAw;
     input  logic [2:0]  DecALUOp;
     input  logic [1:0]  DecMem2Reg, DecALUSrc;
-    input  logic        DecMemWrite, DecMemRead, DecRegWrite, DecReg2Write, DecFlagWrite;
+    input  logic        DecMemWrite, DecMemRead, DecRegWrite, DecFlagWrite;
     
     // Output Logic
     output logic [63:0] ExIncrementedPC, ExDa, ExDb, ExImm9Ext, ExImm12Ext;
     output logic [4:0]  ExAw;
     output logic [2:0]  ExALUOp;
     output logic [1:0]  ExMem2Reg, ExALUSrc;
-    output logic        ExMemWrite, ExMemRead, ExRegWrite, ExReg2Write, ExFlagWrite;
+    output logic        ExMemWrite, ExMemRead, ExRegWrite, ExFlagWrite;
 
     // Register Instantiation
     register64 PCReg (.reset, .clk, .write(1'b1), .in(DecIncrementedPC), .out(ExIncrementedPC));
@@ -43,7 +43,6 @@ module DecodeRegister (clk, reset,
     D_FF MemWriteReg (.q(ExMemWrite), .d(DecMemWrite), .reset, .clk);
     D_FF MemReadReg (.q(ExMemRead), .d(DecMemRead), .reset, .clk);
     D_FF RegWriteReg (.q(ExRegWrite), .d(DecRegWrite), .reset, .clk);
-    D_FF Reg2WriteReg (.q(ExReg2Write), .d(DecReg2Write), .reset, .clk);
     D_FF FlagWriteReg (.q(ExFlagWrite), .d(DecFlagWrite), .reset, .clk);
 
 endmodule
